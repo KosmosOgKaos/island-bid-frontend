@@ -9,7 +9,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   eslint: {
-    ignoreDuringBuilds: true,
+    // Only lint these specific directories
+    dirs: ['app', 'src/components', 'src/utils', 'src/styles', 'src/lib/(?!island-ui)'],
+    // Don't skip ESLint during builds - we'll just be selective about what gets linted
+    ignoreDuringBuilds: false,
   },
 }
 
