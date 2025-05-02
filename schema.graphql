@@ -1,0 +1,13 @@
+schema {
+  query: Query
+}
+
+input CapitalizeInput {
+  input: String!
+}
+
+type Query {
+  capitalize(input: CapitalizeInput!): String!
+  getHello: String!
+  getRandomString: String!
+}

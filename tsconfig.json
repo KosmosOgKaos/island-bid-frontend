@@ -17,6 +17,10 @@
     "plugins": [
       {
         "name": "next"
+      },
+      {
+        "name": "@0no-co/graphqlsp",
+        "schema": "./schema.graphql"
       }
     ],
     "baseUrl": ".",
@@ -29,12 +33,19 @@
         "src/lib/island-ui/vanilla-extract-utils/src/index.ts"
       ],
       "@/components/*": ["src/components/*"],
+      "@/graphql/*": ["src/graphql/*"],
       "@/styles/*": ["src/styles/*"],
       "@/utils/*": ["src/utils/*"],
       "@/lib/*": ["src/lib/*"],
       "@/*": ["src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.css.ts", ".next/types/**/*.ts"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.css.ts",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules", "**/types/link.d.ts", "**/*.conflicting.d.ts"]
 }
