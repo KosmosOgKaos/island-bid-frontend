@@ -7,7 +7,6 @@ import {
   Button,
   Input,
   Text,
-  Tooltip,
   Tag,
   RadioButton,
   AlertMessage,
@@ -21,11 +20,13 @@ import {
   Stack,
 } from '@island.is/island-ui/core'
 import { Header } from '@/components/Header/Header'
+import { ApplicationForm } from '@/components/ApplicationForm'
 
 export default function Home() {
   return (
     <Page>
       <Header title="Island Components" />
+      <ApplicationForm />
       <GridContainer>
         <GridRow>
           <GridColumn span="12/12" paddingTop={5} paddingBottom={5}>
@@ -42,10 +43,6 @@ export default function Home() {
                 </AccordionItem>
               </Accordion>
               <Button variant="primary">Primary button</Button>
-              <Box display="flex" alignItems="center">
-                <Text>With tooltip</Text>
-                <Tooltip text="This is a helpful tooltip" />
-              </Box>
               <Input
                 label="Input field"
                 name="name"
