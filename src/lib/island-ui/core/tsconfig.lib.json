@@ -1,0 +1,21 @@
+{
+  "extends": "../../../../tsconfig.json",
+  "compilerOptions": {
+    "jsx": "react",
+    "module": "esnext",
+    "outDir": "../../../dist/out-tsc/core",
+    "moduleResolution": "bundler",
+    "declaration": false,
+    "declarationMap": false,
+    "types": ["node"]
+  },
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.stories.ts",
+    "**/*.stories.tsx",
+    "**/*.stories.mdx",
+    "**/*.stories.js"
+  ],
+  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+}

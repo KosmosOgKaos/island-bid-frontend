@@ -1,0 +1,20 @@
+{
+  "name": "island-ui-theme",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/island-ui/theme/src",
+  "projectType": "library",
+  "tags": ["lib:react", "scope:react"],
+  "generators": {},
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/island-ui/theme/jest.config.ts"
+      },
+      "outputs": ["{workspaceRoot}/coverage/libs/island-ui/theme"]
+    }
+  }
+}
