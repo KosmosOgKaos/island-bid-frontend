@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write 'app/**/*.{js,jsx,ts,tsx}' 'src/**/*.{js,jsx,ts,tsx}'",
-    "format:check": "prettier --check 'app/**/*.{js,jsx,ts,tsx}' 'src/**/*.{js,jsx,ts,tsx}'"
+    "format:check": "prettier --check 'app/**/*.{js,jsx,ts,tsx}' 'src/**/*.{js,jsx,ts,tsx}'",
+    "codegen": "graphql-codegen --config graphql-codegen.ts"
   },
   "dependencies": {
     "@rehooks/component-size": "^1.0.3",
@@ -22,6 +23,7 @@
     "beygla": "^1.5.2",
     "classnames": "^2.5.1",
     "downshift": "^9.0.9",
+    "graphql": "^16.11.0",
     "hypher": "^0.2.5",
     "libphonenumber-js": "^1.12.7",
     "lodash": "^4.17.21",
@@ -40,6 +42,8 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@graphql-codegen/cli": "5.0.5",
+    "@graphql-codegen/client-preset": "4.8.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
@@ -51,6 +55,6 @@
     "prettier": "^2.8.8",
     "rimraf": "^4.4.1",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5.8.3"
   }
 }
