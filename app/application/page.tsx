@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import Head from 'next/head'
@@ -10,7 +12,7 @@ import {
   Button,
   Header,
 } from '@island.is/island-ui/core'
-import { formSteps } from '../FormSteps/formSteps'
+import { formSteps } from '@/components/FormSteps/formSteps'
 
 interface FormData {
   consent?: boolean
@@ -21,10 +23,10 @@ interface FormData {
   [key: string]: unknown
 }
 
-export const ApplicationForm = () => {
+export default function ApplicationPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const stepId = searchParams.get('step') || formSteps[0].id
+  const stepId = searchParams?.get('step') || formSteps[0].id
   const [activeStepIndex, setActiveStepIndex] = useState(0)
   const [formData, setFormData] = useState<FormData>({})
 
@@ -116,17 +118,19 @@ export const ApplicationForm = () => {
       background="purple100"
       display="flex"
       flexDirection="column"
-      paddingBottom={20}
+      paddingBottom={30}
+      height="full"
+      style={{ minHeight: '100vh' }}
+      width="full"
     >
       <Box background="white" marginBottom={5}>
         <GridContainer>
           <Header
             authenticated
-            userName="Guðrún Jónsdóttir"
-            language="EN"
+            userName="Jökull Þórðarson"
             info={{
-              title: 'Umsóknareyðublað',
-              description: 'Island.is',
+              title: 'Skatturinn',
+              description: 'Sækja um skattframtal',
             }}
             userAsDropdown={true}
           />
