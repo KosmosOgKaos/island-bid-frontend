@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import {
   Box,
   GridColumn,
@@ -7,134 +7,147 @@ import {
   Stack,
   Text,
 } from '@island.is/island-ui/core'
-import { formatIcelandicAmount, calculateTotal } from '@/utils/numberUtils'
+import { formatIcelandicAmount } from '@/utils/numberUtils'
 import { CurrencyInput } from '@/components/CurrencyInput/CurrencyInput'
-
-// Define specific types for each income category
-type EmploymentItem = {
-  companyName: string
-  amount: string
-}
-
-type BenefitItem = {
-  name: string
-  amount: string
-}
-
-type OtherIncomeItem = {
-  provider: string
-  description: string
-  amount: string
-}
-
-interface IncomeData {
-  employment: {
-    items: EmploymentItem[]
-    total: string
-  }
-  benefits: {
-    items: BenefitItem[]
-    total: string
-  }
-  other: {
-    items: OtherIncomeItem[]
-    total: string
-  }
-  grandTotal?: string
-}
-
 interface FormProps {
   data: {
-    income?: IncomeData
+    incomes?: IncomeItem[]
     [key: string]: unknown
   }
   onChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void
 }
-
-// Default income data with Icelandic number formatting
-const defaultIncomeData: IncomeData = {
-  employment: {
-    items: [
-      { companyName: 'Norðurljós Software', amount: '9.360.000 kr.' },
-      { companyName: 'Mús & merki ehf.', amount: '900.000 kr.' },
-    ],
-    total: '10.260.000 kr.',
-  },
-  benefits: {
-    items: [{ name: 'Dagpeningar', amount: '120.000 kr.' }],
-    total: '120.000 kr.',
-  },
-  other: {
-    items: [
-      {
-        provider: 'Norðurljós Software ehf.',
-        description: 'íþróttastyrkur',
-        amount: '75.000 kr.',
-      },
-      {
-        provider: 'VR',
-        description: 'Starfsmenntastyrkur',
-        amount: '130.000 kr.',
-      },
-    ],
-    total: '205.000 kr.',
-  },
+interface IncomeItem {
+  id: number
+  type: string
+  payer: string | null
+  amount: number
+  currency: string
+  explanation: string | null
+  submissionId: number
+  createdAt: string
+  updatedAt: string
 }
+
+const defaultIncomeData: IncomeItem[] = [
+  {
+    id: 1,
+    type: 'Wages',
+    payer: 'Norðurljós Software ehf',
+    amount: 9360000,
+    currency: 'ISK',
+    explanation: null,
+    submissionId: 3,
+    createdAt: '2025-05-05T18:22:03.514Z',
+    updatedAt: '2025-05-05T18:22:03.514Z',
+  },
+  {
+    id: 2,
+    type: 'Wages',
+    payer: 'Mús & Merki ehf.',
+    amount: 900000,
+    currency: 'ISK',
+    explanation: null,
+    submissionId: 3,
+    createdAt: '2025-05-05T18:22:03.514Z',
+    updatedAt: '2025-05-05T18:22:03.514Z',
+  },
+  {
+    id: 3,
+    type: 'Benefits',
+    payer: null,
+    amount: 120000,
+    currency: 'ISK',
+    explanation: 'Dagpeningar',
+    submissionId: 3,
+    createdAt: '2025-05-05T18:22:03.514Z',
+    updatedAt: '2025-05-05T18:22:03.514Z',
+  },
+  {
+    id: 4,
+    type: 'Other',
+    payer: 'Norðurljós Software ehf',
+    amount: 75000,
+    currency: 'ISK',
+    explanation: 'Íþróttastyrkur',
+    submissionId: 3,
+    createdAt: '2025-05-05T18:22:03.514Z',
+    updatedAt: '2025-05-05T18:22:03.514Z',
+  },
+  {
+    id: 5,
+    type: 'Other',
+    payer: 'VR',
+    amount: 130000,
+    currency: 'ISK',
+    explanation: 'Starfsmenntastyrkur',
+    submissionId: 3,
+    createdAt: '2025-05-05T18:22:03.514Z',
+    updatedAt: '2025-05-05T18:22:03.514Z',
+  },
+]
 
 export const Income = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
 
   useEffect(() => {
-    if (!data.income) {
+    if (!data.incomes) {
       const event = {
         target: {
-          name: 'income',
+          name: 'incomes',
           value: defaultIncomeData,
         },
       } as unknown as React.ChangeEvent<HTMLInputElement>
       onChange(event)
     }
-  }, [data.income, onChange])
+  }, [data.incomes, onChange])
 
-  const incomeData = data.income || defaultIncomeData
+  const incomeData = data.incomes || defaultIncomeData
 
-  const handleIncomeChange = (
-    category: keyof IncomeData,
-    index: number,
-    field: string,
-    value: string
-  ) => {
-    const updatedIncome = JSON.parse(JSON.stringify(incomeData)) as IncomeData
-
-    // Update the specified field based on category type
-    if (category === 'employment') {
-      updatedIncome.employment.items[index].amount = value
-      updatedIncome.employment.total = formatIcelandicAmount(
-        calculateTotal(updatedIncome.employment.items)
-      )
-    } else if (category === 'benefits') {
-      updatedIncome.benefits.items[index].amount = value
-      updatedIncome.benefits.total = formatIcelandicAmount(
-        calculateTotal(updatedIncome.benefits.items)
-      )
-    } else if (category === 'other') {
-      updatedIncome.other.items[index][field as keyof OtherIncomeItem] = value
-      updatedIncome.other.total = formatIcelandicAmount(
-        calculateTotal(updatedIncome.other.items)
-      )
+  const groupedIncome = useMemo(() => {
+    const grouped = {
+      Wages: [] as IncomeItem[],
+      Benefits: [] as IncomeItem[],
+      Other: [] as IncomeItem[],
     }
 
-    const employmentTotal = calculateTotal(updatedIncome.employment.items)
-    const benefitsTotal = calculateTotal(updatedIncome.benefits.items)
-    const otherTotal = calculateTotal(updatedIncome.other.items)
-    const grandTotal = employmentTotal + benefitsTotal + otherTotal
-    updatedIncome.grandTotal = formatIcelandicAmount(grandTotal)
+    incomeData.forEach(income => {
+      if (income.type in grouped) {
+        grouped[income.type as keyof typeof grouped].push(income)
+      } else {
+        grouped.Other.push(income)
+      }
+    })
 
+    return grouped
+  }, [incomeData])
+
+  const totals = useMemo(() => {
+    const calcTotal = (items: IncomeItem[]) =>
+      items.reduce((sum, item) => sum + item.amount, 0)
+
+    return {
+      Wages: calcTotal(groupedIncome.Wages),
+      Benefits: calcTotal(groupedIncome.Benefits),
+      Other: calcTotal(groupedIncome.Other),
+      grandTotal: calcTotal(incomeData),
+    }
+  }, [groupedIncome, incomeData])
+
+  const handleIncomeChange = (id: number, amount: string) => {
+    // Convert formatted amount to number
+    const numericAmount = parseInt(amount.replace(/[^0-9]/g, ''), 10)
+
+    // Create a deep copy of the current income data
+    const updatedIncome = incomeData.map(item =>
+      item.id === id ? { ...item, amount: numericAmount } : item
+    )
+
+    // Update the form data
     const event = {
       target: {
-        name: 'income',
+        name: 'incomes',
         value: updatedIncome,
       },
     } as unknown as React.ChangeEvent<HTMLInputElement>
@@ -152,20 +165,17 @@ export const Income = ({ form }: { form: FormProps }) => {
       </Text>
 
       <Stack space={5}>
+        {/* Wages Section */}
         <Box>
-          <Text variant="h3">
-            3.1 - Tekjur
-          </Text>
-          <Text marginBottom={3}>
-            Launtekjur og starfstengdar greiðslur
-          </Text>
-          {incomeData.employment.items.map((item, index) => (
-            <GridRow key={`employment-${index}`}>
+          <Text variant="h3">3.1 - Tekjur</Text>
+          <Text marginBottom={3}>Launtekjur og starfstengdar greiðslur</Text>
+          {groupedIncome.Wages.map(item => (
+            <GridRow key={`wages-${item.id}`}>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <Input
-                  name={`employment-${index}-companyName`}
+                  name={`wages-${item.id}-payer`}
                   label="Heiti fyrirtækis"
-                  value={item.companyName}
+                  value={item.payer || ''}
                   onChange={() => {}}
                   type="text"
                   readOnly
@@ -173,12 +183,10 @@ export const Income = ({ form }: { form: FormProps }) => {
               </GridColumn>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <CurrencyInput
-                  name={`employment-${index}-amount`}
+                  name={`wages-${item.id}-amount`}
                   label="Launafjárhæð"
-                  value={item.amount}
-                  onChange={value =>
-                    handleIncomeChange('employment', index, 'amount', value)
-                  }
+                  value={formatIcelandicAmount(item.amount)}
+                  onChange={value => handleIncomeChange(item.id, value)}
                   backgroundColor="blue"
                 />
               </GridColumn>
@@ -187,9 +195,9 @@ export const Income = ({ form }: { form: FormProps }) => {
           <GridRow>
             <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
               <Input
-                name="employment-total"
+                name="wages-total"
                 label="Samtals"
-                value={incomeData.employment.total}
+                value={formatIcelandicAmount(totals.Wages)}
                 onChange={() => {}}
                 type="text"
                 readOnly
@@ -198,20 +206,19 @@ export const Income = ({ form }: { form: FormProps }) => {
           </GridRow>
         </Box>
 
+        {/* Benefits Section */}
         <Box>
-          <Text variant="h3">
-            3.2 - Tekjur
-          </Text>
+          <Text variant="h3">3.2 - Tekjur</Text>
           <Text marginBottom={3}>
             Ökutækjastyrkur, dagpeningar og hlunnindi
           </Text>
-          {incomeData.benefits.items.map((item, index) => (
-            <GridRow key={`benefits-${index}`}>
+          {groupedIncome.Benefits.map(item => (
+            <GridRow key={`benefits-${item.id}`}>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <Input
-                  name={`benefits-${index}-name`}
+                  name={`benefits-${item.id}-explanation`}
                   label="Heiti tekjuliðs"
-                  value={item.name}
+                  value={item.explanation || ''}
                   onChange={() => {}}
                   type="text"
                   readOnly
@@ -219,12 +226,10 @@ export const Income = ({ form }: { form: FormProps }) => {
               </GridColumn>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <CurrencyInput
-                  name={`benefits-${index}-amount`}
+                  name={`benefits-${item.id}-amount`}
                   label="Launafjárhæð"
-                  value={item.amount}
-                  onChange={value =>
-                    handleIncomeChange('benefits', index, 'amount', value)
-                  }
+                  value={formatIcelandicAmount(item.amount)}
+                  onChange={value => handleIncomeChange(item.id, value)}
                   backgroundColor="blue"
                 />
               </GridColumn>
@@ -234,8 +239,8 @@ export const Income = ({ form }: { form: FormProps }) => {
             <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
               <Input
                 name="benefits-total"
-                label="Dagpeningafjárhæð"
-                value={incomeData.benefits.total}
+                label="Samtals"
+                value={formatIcelandicAmount(totals.Benefits)}
                 onChange={() => {}}
                 type="text"
                 readOnly
@@ -244,21 +249,20 @@ export const Income = ({ form }: { form: FormProps }) => {
           </GridRow>
         </Box>
 
+        {/* Other Income Section */}
         <Box>
-          <Text variant="h3">
-            3.3 - Tekjur
-          </Text>
+          <Text variant="h3">3.3 - Tekjur</Text>
           <Text marginBottom={3}>
             Lífeyrisgreiðslur, greiðslur frá Tryggingastofnun, aðrar
             bótagreiðslur, styrkir o.fl.
           </Text>
-          {incomeData.other.items.map((item, index) => (
-            <GridRow key={`other-${index}`}>
+          {groupedIncome.Other.map(item => (
+            <GridRow key={`other-${item.id}`}>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <Input
-                  name={`other-${index}-provider`}
+                  name={`other-${item.id}-payer`}
                   label="Styrk veitandi"
-                  value={item.provider}
+                  value={item.payer || ''}
                   onChange={() => {}}
                   type="text"
                   readOnly
@@ -266,12 +270,10 @@ export const Income = ({ form }: { form: FormProps }) => {
               </GridColumn>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <CurrencyInput
-                  name={`other-${index}-amount`}
-                  label={item.description}
-                  value={item.amount}
-                  onChange={value =>
-                    handleIncomeChange('other', index, 'amount', value)
-                  }
+                  name={`other-${item.id}-amount`}
+                  label={item.explanation || ''}
+                  value={formatIcelandicAmount(item.amount)}
+                  onChange={value => handleIncomeChange(item.id, value)}
                   backgroundColor="blue"
                 />
               </GridColumn>
@@ -282,7 +284,7 @@ export const Income = ({ form }: { form: FormProps }) => {
               <Input
                 name="other-total"
                 label="Samtals"
-                value={incomeData.other.total}
+                value={formatIcelandicAmount(totals.Other)}
                 onChange={() => {}}
                 type="text"
                 readOnly
@@ -290,6 +292,8 @@ export const Income = ({ form }: { form: FormProps }) => {
             </GridColumn>
           </GridRow>
         </Box>
+
+        {/* Grand Total Section */}
         <Box>
           <Text variant="h3" marginBottom={3}>
             Heildartekjur ársins
@@ -299,14 +303,7 @@ export const Income = ({ form }: { form: FormProps }) => {
               <Input
                 name="income-grand-total"
                 label="Samtals"
-                value={
-                  incomeData.grandTotal ||
-                  formatIcelandicAmount(
-                    calculateTotal(incomeData.employment.items) +
-                      calculateTotal(incomeData.benefits.items) +
-                      calculateTotal(incomeData.other.items)
-                  )
-                }
+                value={formatIcelandicAmount(totals.grandTotal)}
                 type="text"
                 readOnly
                 backgroundColor="blue"
