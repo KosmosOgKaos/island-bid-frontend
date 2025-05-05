@@ -11,9 +11,10 @@ import {
   GridColumn,
   Button,
   Header,
+  Text
 } from '@island.is/island-ui/core'
 import { formSteps } from '@/components/FormSteps/formSteps'
-
+import taxLogo from '../../assets/taxLogo.png'
 interface FormData {
   consent?: boolean
   name?: string
@@ -118,8 +119,6 @@ export default function ApplicationPage() {
       background="purple100"
       display="flex"
       flexDirection="column"
-      paddingBottom={30}
-      height="full"
       style={{ minHeight: '100vh' }}
       width="full"
     >
@@ -148,19 +147,60 @@ export default function ApplicationPage() {
             <Box
               background="white"
               borderRadius="large"
-              paddingY={8}
+              paddingTop={8}
               paddingX={12}
+              display="flex"
+              flexDirection="column"
             >
               {renderStep()}
             </Box>
           </GridColumn>
 
           <GridColumn span={['12/12', '12/12', '3/12']}>
-            <Box paddingTop={[0, 0, 10]} position="sticky" top={0}>
-              <FormStepper
-                sections={formStepperSections}
-                activeSection={activeStepIndex}
-              />
+            <Box 
+              display="flex"
+              flexDirection="column"
+              height="full"
+              justifyContent="spaceBetween"
+              paddingBottom={2}
+            >
+              <Box paddingTop={[0, 0, 10]} position="sticky" top={0}>
+                <FormStepper
+                  sections={formStepperSections}
+                  activeSection={activeStepIndex}
+                />
+              </Box>
+              
+              <Box 
+                display={['none', 'none', 'block']} 
+                marginTop={8}
+              >
+                <Box
+                  background="purple100"
+                  borderRadius="large"
+                  padding={4}
+                  paddingLeft={0}
+                  display="flex"
+                  alignItems="center"
+                >
+                  <Box style={{ flex: '0 0 50px' }} marginRight={3}>
+                    <Box
+                      component="img"
+                      alt="Tax logo"
+                      src={taxLogo.src}
+                      width="full"
+                    />
+                  </Box>
+                  <Box>
+                    <Text variant="eyebrow" color="purple600">
+                      Þjónustuaðili
+                    </Text>
+                    <Text variant="h3" color="purple600">
+                      Skatturinn
+                    </Text>
+                  </Box>
+                </Box>
+              </Box>
             </Box>
           </GridColumn>
         </GridRow>

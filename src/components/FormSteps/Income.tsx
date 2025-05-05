@@ -9,14 +9,13 @@ import {
 
 interface FormProps {
   data: {
-    email?: string
-    phone?: string
+    income?: string
     [key: string]: unknown
   }
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 }
 
-export const Step3 = ({ form }: {
+export const Income = ({ form }: {
   form: FormProps
 }) => {
   const { data, onChange } = form
@@ -24,29 +23,29 @@ export const Step3 = ({ form }: {
   return (
     <Box>
       <Text variant="h2" marginBottom={2}>
-        Skref 3
+        Tekjur ársins 2024
       </Text>
       <Text marginBottom={5}>
-        Vinsamlegast fylltu út samskiptaupplýsingar þínar.
+        Vinsamlegast fylltu út tekjurnar þínar.
       </Text>
 
       <GridRow>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
           <Input 
-            name="email" 
-            label="Netfang" 
-            value={data.email || ''}
+            name="income" 
+            label="Tekjur" 
+            value={data.income || ''}
             onChange={onChange}
-            type="email"
+            type="number"
           />
         </GridColumn>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
           <Input 
-            name="phone" 
-            label="Símanúmer" 
-            value={data.phone || ''}
+            name="income" 
+            label="Tekjur" 
+            value={data.income || ''}
             onChange={onChange}
-            type="tel"
+            type="number"
           />
         </GridColumn>
       </GridRow>

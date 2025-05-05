@@ -9,7 +9,7 @@ interface FormProps {
   }
 }
 
-export const Step4 = ({ form }: {
+export const Assets = ({ form }: {
   form: FormProps
 }) => {
   console.log(form)
@@ -17,14 +17,10 @@ export const Step4 = ({ form }: {
   return (
     <Box>
       <Text variant="h2" marginBottom={2}>
-        Skref 4
+        Eignir ársins 2024
       </Text>
       <Text marginBottom={5}>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      </Text>
-
-      <Text variant="h2" marginBottom={2}>
-        Final step - Overview
+        Vinsamlegast fylltu út eignir þínar.
       </Text>
     </Box>
   )
