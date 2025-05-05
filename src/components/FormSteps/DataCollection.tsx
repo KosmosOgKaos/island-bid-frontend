@@ -22,7 +22,7 @@ export const DataCollection = ({ form }: {
   return (
     <Box>
       <Text variant="h2" marginBottom={3}>
-        Skref 1
+        Gagnaöflun
       </Text>
 
       <Box display="flex">
