@@ -1,11 +1,11 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 
-export default function ApplicationLayout({ children }: { children: ReactNode }) {
-  return (
-    <>
-      {children}
-    </>
-  )
+export default function ApplicationLayout({
+  children,
+}: {
+  children: ReactNode
+}) {
+  return <Suspense>{children}</Suspense>
 }
