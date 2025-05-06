@@ -12,18 +12,25 @@ import {
   Text,
 } from '@island.is/island-ui/core'
 import { formSteps } from '@/components/FormSteps/formSteps'
-import { IncomeItem } from '@/constants/incomeData'
+import { IncomeItem, PropertyItem, DebtItem, Person } from '@/lib/types'
 import Header from '../../src/components/Header'
 import taxLogo from '../../assets/taxLogo.png'
+
+interface TaxData {
+  person?: Person
+  incomes?: IncomeItem[]
+  properties?: PropertyItem[]
+  debts?: DebtItem[]
+  [key: string]: unknown
+}
 
 interface FormData {
   consent?: boolean
   consentChanged?: boolean
-  name?: string
-  nationalId?: string
-  email?: string
-  phone?: string
+  person?: Person
   incomes?: IncomeItem[]
+  properties?: PropertyItem[]
+  debts?: DebtItem[]
   [key: string]: unknown
 }
 
@@ -42,22 +49,45 @@ export default function ApplicationPage() {
     }
   }, [stepId])
 
-  // Load data from localStorage on initial render
   useEffect(() => {
     try {
-      // Load income data from localStorage if available
-      const storedIncomeData = localStorage.getItem('incomeData')
-      if (storedIncomeData) {
-        const parsedIncomeData = JSON.parse(storedIncomeData)
-        
-        // Update the form data with the saved income data
-        setFormData(prevData => ({
-          ...prevData,
-          incomes: parsedIncomeData
-        }))
+      // Load tax data from localStorage on component mount
+      const savedTaxData = localStorage.getItem('taxData')
+
+      if (savedTaxData) {
+        const parsedTaxData = JSON.parse(savedTaxData)
+
+        // Extract individual data sections and update form state
+        if (parsedTaxData.person) {
+          setFormData(prevData => ({
+            ...prevData,
+            person: parsedTaxData.person,
+          }))
+        }
+
+        if (parsedTaxData.incomes) {
+          setFormData(prevData => ({
+            ...prevData,
+            incomes: parsedTaxData.incomes,
+          }))
+        }
+
+        if (parsedTaxData.properties) {
+          setFormData(prevData => ({
+            ...prevData,
+            properties: parsedTaxData.properties,
+          }))
+        }
+
+        if (parsedTaxData.debts) {
+          setFormData(prevData => ({
+            ...prevData,
+            debts: parsedTaxData.debts,
+          }))
+        }
       }
     } catch (error) {
-      console.error('Error loading data from localStorage:', error)
+      console.error('Error loading saved form data from localStorage:', error)
     }
   }, [])
 
@@ -66,18 +96,38 @@ export default function ApplicationPage() {
   ) => {
     const { name, value } = e.target
 
+    // Special handling for checkbox inputs
     if ('type' in e.target && e.target.type === 'checkbox') {
       const target = e.target as HTMLInputElement
       setFormData(prev => ({
         ...prev,
         [name]: target.checked,
       }))
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value,
-      }))
+      return
     }
+
+    // Special handling for the taxData case from useTaxData hook
+    if (name === 'taxData' && typeof value === 'object') {
+      // Extract individual data sections from the taxData object
+      const taxData = value as TaxData
+
+      setFormData(prev => {
+        const newData = { ...prev }
+
+        if (taxData.person) newData.person = taxData.person
+        if (taxData.incomes) newData.incomes = taxData.incomes
+        if (taxData.properties) newData.properties = taxData.properties
+        if (taxData.debts) newData.debts = taxData.debts
+
+        return newData
+      })
+      return
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
   const currentStep = formSteps[activeStepIndex]
@@ -88,26 +138,17 @@ export default function ApplicationPage() {
       return
     }
 
-    // Handle data collection step - set consentChanged flag when moving from data collection
+    // Handle data collection step special validation
     if (currentStep.id === 'dataCollection') {
       // Validate consent checkbox
       if (!formData.consent) {
         setValidationError('Vinsamlegast samþykktu að gögn verði sótt rafrænt.')
         return
       }
-      
+
       // Clear any validation errors when continuing
       setValidationError(null)
-      
-      // Set the flag and navigate with a small delay to ensure data fetching starts
-      setFormData(prevData => ({
-        ...prevData,
-        consentChanged: true
-      }))
-      
-      setTimeout(() => {
-        router.push(`/application?step=${nextStepId}`)
-      }, 100)
+      router.push(`/application?step=${nextStepId}`)
     } else {
       // For other steps, navigate immediately
       setValidationError(null)
@@ -134,7 +175,7 @@ export default function ApplicationPage() {
             onChange: handleInputChange,
           }}
         />
-        
+
         {validationError && (
           <Text variant="eyebrow" color="red600">
             {validationError}
@@ -157,7 +198,9 @@ export default function ApplicationPage() {
             </Button>
           )}
           {currentStep.next && (
-            <Button onClick={goToNextStep} icon="arrowForward">Halda áfram</Button>
+            <Button onClick={goToNextStep} icon="arrowForward">
+              Halda áfram
+            </Button>
           )}
         </Box>
       </Box>
@@ -165,7 +208,7 @@ export default function ApplicationPage() {
   }
 
   const formStepperSections = formSteps
-    .filter(step => step.title) 
+    .filter(step => step.title)
     .map(step => ({
       name: step.title || '',
       children: [],
@@ -209,56 +252,50 @@ export default function ApplicationPage() {
           </GridColumn>
 
           {activeStepIndex !== formSteps.length - 1 && (
-          <GridColumn span={['12/12', '12/12', '3/12']}>
-            <Box
-              display="flex"
-              flexDirection="column"
-              height="full"
-              justifyContent="spaceBetween"
-              paddingBottom={2}
-              marginTop={[0, 0, 3]}
-            >
+            <GridColumn span={['12/12', '12/12', '3/12']}>
               <Box
-                paddingTop={[0, 0, 10]}
-                position="sticky"
-                top={0}
-                style={{ marginTop: '-20px' }}
+                display="flex"
+                flexDirection="column"
+                height="full"
+                justifyContent="spaceBetween"
+                paddingBottom={2}
+                marginTop={[0, 0, 3]}
               >
-                <FormStepper
-                  sections={formStepperSections}
-                  activeSection={activeStepIndex}
-                />
-              </Box>
+                <Box top={0} position="sticky" style={{ marginTop: '-20px' }}>
+                  <FormStepper
+                    sections={formStepperSections}
+                    activeSection={activeStepIndex}
+                  />
+                </Box>
 
-              <Box display={['none', 'none', 'block']} marginTop={8}>
-                <Box
-                  background="purple100"
-                  borderRadius="large"
-                  padding={4}
-                  paddingLeft={0}
-                  display="flex"
-                  alignItems="center"
-                >
-                  <Box style={{ flex: '0 0 50px' }} marginRight={3}>
-                    <Box
-                      component="img"
-                      alt="Tax logo"
-                      src={taxLogo.src}
-                      width="full"
-                    />
-                  </Box>
-                  <Box>
-                    <Text variant="eyebrow" color="purple600">
-                      Þjónustuaðili
-                    </Text>
-                    <Text variant="h3" color="purple600">
-                      Skatturinn
-                    </Text>
+                <Box display={['none', 'none', 'block']}>
+                  <Box
+                    background="purple100"
+                    borderRadius="large"
+                    paddingBottom={6}
+                    display="flex"
+                    alignItems="center"
+                  >
+                    <Box style={{ flex: '0 0 50px' }} marginRight={3}>
+                      <Box
+                        component="img"
+                        alt="Tax logo"
+                        src={taxLogo.src}
+                        width="full"
+                      />
+                    </Box>
+                    <Box>
+                      <Text variant="eyebrow" color="purple600">
+                        Þjónustuaðili
+                      </Text>
+                      <Text variant="h3" color="purple600">
+                        Skatturinn
+                      </Text>
+                    </Box>
                   </Box>
                 </Box>
               </Box>
-            </Box>
-          </GridColumn>
+            </GridColumn>
           )}
         </GridRow>
       </GridContainer>

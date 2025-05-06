@@ -26,35 +26,29 @@ export const useTaxData = ({
     onCompleted: response => {
       setIsLoading(false)
 
-      if (response.getLatestTaxReturnInfo) {
+      if (response && response.getLatestTaxReturnInfo) {
         const taxData = response.getLatestTaxReturnInfo
-        console.log('✅ Tax data successfully fetched')
+        
+        localStorage.setItem('taxData', JSON.stringify(taxData))
 
-        // Focus only on income data
-        if (taxData.incomes && Array.isArray(taxData.incomes)) {
-          // Store just the income data for simplicity
-          localStorage.setItem('incomeData', JSON.stringify(taxData.incomes))
-
-          // Update the form
-          onChange({
-            target: {
-              name: 'incomes',
-              value: taxData.incomes,
-            },
-          } as FormChangeEvent)
-          setIsDataFetched(true)
-          setFetchError(null)
-        } else {
-          setFetchError('Engin gögn um tekjur fundust')
-        }
+        onChange({
+          target: {
+            name: 'taxData',
+            value: taxData
+          }
+        } as FormChangeEvent)
+        
+        setIsDataFetched(true)
+        setFetchError(null)
       } else {
-        setFetchError('Engin gögn komu frá þjónustu')
+        setFetchError('Engin gögn fundust')
       }
     },
-    onError: () => {
-      setFetchError('Villa kom upp við að sækja gögn')
+    onError: (error) => {
+      setFetchError(`Villa kom upp við að sækja gögn: ${error.message}`)
       setIsLoading(false)
     },
+    fetchPolicy: 'network-only'
   })
 
   const fetchTaxData = useCallback(() => {
@@ -68,6 +62,8 @@ export const useTaxData = ({
           ssn: '1203894569',
         },
       },
+    }).catch(() => {
+      setIsLoading(false)
     })
   }, [executeQuery])
 
@@ -75,6 +71,6 @@ export const useTaxData = ({
     fetchTaxData,
     isLoading,
     isDataFetched,
-    fetchError,
+    fetchError
   }
 }
