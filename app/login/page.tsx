@@ -14,10 +14,27 @@ import {
   Input,
   Divider,
 } from '@island.is/island-ui/core'
+import { useLoginMutation } from '@/lib/graphql'
 
 export default function LoginPage() {
   const router = useRouter()
   const [phoneNumber, setPhoneNumber] = useState('')
+  const [loginMutation] = useLoginMutation()
+
+  const handleLogin = async () => {
+    try {
+      const result = await loginMutation({
+        variables: {
+          phoneNumber,
+        },
+      })
+      if (result.data?.login.success) {
+        router.push('/application')
+      }
+    } catch (error) {
+      console.error('Login failed:', error)
+    }
+  }
 
   return (
     <Page>
@@ -63,7 +80,7 @@ export default function LoginPage() {
                       </Box>
                       <Box width="full">
                         <Button
-                          onClick={() => router.push('/application')}
+                          onClick={handleLogin}
                           fluid
                           disabled={!phoneNumber || phoneNumber.length < 7}
                         >
