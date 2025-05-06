@@ -9,8 +9,8 @@ import {
   Text,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
-import { CurrencyInput } from '@/components/CurrencyInput'
-import { IncomeItem, defaultIncomeData } from '@/constants/incomeData'
+import { IncomeItem } from '@/constants/incomeData'
+import { CurrencyInput } from '../CurrencyInput'
 
 interface FormProps {
   data: {
@@ -26,18 +26,33 @@ export const Income = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
 
   useEffect(() => {
-    if (!data.incomes) {
-      const event = {
-        target: {
-          name: 'incomes',
-          value: defaultIncomeData,
-        },
-      } as unknown as React.ChangeEvent<HTMLInputElement>
-      onChange(event)
+    // Check if we already have data in props
+    if (data.incomes && data.incomes.length > 0) {
+      return
+    }
+
+    try {
+      const storedIncomeData = localStorage.getItem('incomeData')
+      
+      if (storedIncomeData) {
+        const incomeData = JSON.parse(storedIncomeData)
+        
+        if (Array.isArray(incomeData) && !data.incomes) {
+          const event = {
+            target: {
+              name: 'incomes',
+              value: incomeData,
+            },
+          } as unknown as React.ChangeEvent<HTMLInputElement>
+          onChange(event)
+        }
+      }
+    } catch {
+      // Handle silently
     }
   }, [data.incomes, onChange])
 
-  const incomeData = data.incomes || defaultIncomeData
+  const incomeData = useMemo(() => data.incomes || [], [data.incomes])
 
   const groupedIncome = useMemo(() => {
     const grouped = {
@@ -111,11 +126,11 @@ export const Income = ({ form }: { form: FormProps }) => {
             T.d. ákvæðislaun, biðlaun, nefndarlaun, stjórnarlaun, launabætur,
             staðaruppbót, o.fl.
           </Text>
-          {groupedIncome.Wages.map(item => (
-            <GridRow key={`wages-${item.id}`}>
+          {groupedIncome.Wages.map((item, index) => (
+            <GridRow key={`wages-${item.id || index}`}>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <Input
-                  name={`wages-${item.id}-payer`}
+                  name={`wages-${item.id || index}-payer`}
                   label="Heiti fyrirtækis"
                   value={item.payer || ''}
                   onChange={() => {}}
@@ -160,11 +175,11 @@ export const Income = ({ form }: { form: FormProps }) => {
             T.d. ökutækjastyrkur, dagpeningar og/eða önnur hlunnindi{' '}
           </Text>
 
-          {groupedIncome.Benefits.map(item => (
-            <GridRow key={`benefits-${item.id}`}>
+          {groupedIncome.Benefits.map((item, index) => (
+            <GridRow key={`benefits-${item.id || index}`}>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <Input
-                  name={`benefits-${item.id}-explanation`}
+                  name={`benefits-${item.id || index}-explanation`}
                   label="Heiti tekjuliðs"
                   value={item.explanation || ''}
                   onChange={() => {}}
@@ -209,11 +224,11 @@ export const Income = ({ form }: { form: FormProps }) => {
             T.d. lífeyrisgreiðslur, greiðslur frá Tryggingastofnun, aðrar
             bótagreiðslur, styrkir o.fl.
           </Text>
-          {groupedIncome.Other.map(item => (
-            <GridRow key={`other-${item.id}`}>
+          {groupedIncome.Other.map((item, index) => (
+            <GridRow key={`other-${item.id || index}`}>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
                 <Input
-                  name={`other-${item.id}-payer`}
+                  name={`other-${item.id || index}-payer`}
                   label="Styrk veitandi"
                   value={item.payer || ''}
                   onChange={() => {}}

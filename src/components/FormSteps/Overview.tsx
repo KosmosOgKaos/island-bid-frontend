@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   Box,
   Text,
@@ -9,10 +9,9 @@ import {
   Divider,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
-import { DebtItem, defaultDebtsData } from '@/constants/debtsData'
-import { PropertyItem, defaultPropertiesData } from '@/constants/propertiesData'
-import { IncomeItem, defaultIncomeData } from '@/constants/incomeData'
-import { defaultPersonData } from '@/constants/personData'
+import { DebtItem } from '@/constants/debtsData'
+import { PropertyItem } from '@/constants/propertiesData'
+import { IncomeItem } from '@/constants/incomeData'
 
 interface FormProps {
   data: {
@@ -25,6 +24,7 @@ interface FormProps {
     }
     properties?: PropertyItem[]
     debts?: DebtItem[]
+    incomes?: IncomeItem[]
     income?: IncomeItem[]
     [key: string]: unknown
   }
@@ -36,52 +36,9 @@ interface FormProps {
 // Component wrapper to handle different prop structures
 export const Overview = ({ form }: { form: FormProps }) => {
   const { data } = form
-  console.log('Overview data:', data)
-
-  // Initialize default data if fields are missing
-  useEffect(() => {
-    if (form.onChange) {
-      // If person data is missing, initialize with default
-      if (!data?.person) {
-        form.onChange({
-          target: {
-            name: 'person',
-            value: defaultPersonData
-          }
-        } as unknown as React.ChangeEvent<HTMLInputElement>)
-      }
-
-      // If income data is missing, initialize with default
-      if (!data?.income || data.income.length === 0) {
-        form.onChange({
-          target: {
-            name: 'income',
-            value: defaultIncomeData
-          }
-        } as unknown as React.ChangeEvent<HTMLInputElement>)
-      }
-
-      // If properties data is missing, initialize with default
-      if (!data?.properties || data.properties.length === 0) {
-        form.onChange({
-          target: {
-            name: 'properties',
-            value: defaultPropertiesData
-          }
-        } as unknown as React.ChangeEvent<HTMLInputElement>)
-      }
-
-      // If debts data is missing, initialize with default
-      if (!data?.debts || data.debts.length === 0) {
-        form.onChange({
-          target: {
-            name: 'debts',
-            value: defaultDebtsData
-          }
-        } as unknown as React.ChangeEvent<HTMLInputElement>)
-      }
-    }
-  }, [form, data])
+  
+  // Get the income data with fallback to either property name
+  const incomeData = (data?.incomes || data?.income || []) as IncomeItem[]
 
   // Helper function to create section titles
   const SectionTitle = ({ title, number }: { title: string; number: string }) => (
@@ -158,20 +115,20 @@ export const Overview = ({ form }: { form: FormProps }) => {
         <Box border="standard" padding={4} borderRadius="large">
           <SectionTitle title="Tekjur" number="3" />
 
-          {data?.income && data.income.length > 0 ? (
+          {incomeData.length > 0 ? (
             <>
               {/* Wages */}
-              {data?.income?.filter(item => item.type === 'Wages').length >
+              {incomeData.filter(item => item.type === 'Wages').length >
                 0 && (
                 <Box marginBottom={4}>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
-                      <Text variant="h4">Launatekjur</Text>
+                      <Text variant="h4">Launatekjur og starfstengdar greiðslur</Text>
                     </Box>
                     <Tag variant="blue">3.1</Tag>
                   </Box>
 
-                  {data?.income
+                  {incomeData
                     .filter(item => item.type === 'Wages')
                     .map((item, index) => (
                       <Box
@@ -206,10 +163,10 @@ export const Overview = ({ form }: { form: FormProps }) => {
                     marginTop={2}
                   >
                     <Box display="flex" justifyContent="spaceBetween" alignItems="center">
-                      <Text fontWeight="semiBold">Samtals launatekjur</Text>
+                      <Text fontWeight="semiBold">Samtals launatekjur og starfstengdar greiðslur</Text>
                       <Text fontWeight="semiBold" color="blue600" textAlign="right">
                         {formatIcelandicAmount(
-                          data.income
+                          incomeData
                             .filter(item => item.type === 'Wages')
                             .reduce((sum, item) => sum + item.amount, 0)
                         )}
@@ -220,15 +177,15 @@ export const Overview = ({ form }: { form: FormProps }) => {
               )}
 
               {/* Add divider between Wages and Benefits */}
-              {data?.income?.filter(item => item.type === 'Wages').length > 0 &&
-                data?.income?.filter(item => item.type === 'Benefits').length > 0 && (
+              {incomeData.filter(item => item.type === 'Wages').length > 0 &&
+                incomeData.filter(item => item.type === 'Benefits').length > 0 && (
                   <Box marginTop={3} marginBottom={8}>
                     <Divider />
                   </Box>
                 )}
               
               {/* Benefits */}
-              {data?.income?.filter(item => item.type === 'Benefits').length >
+              {incomeData.filter(item => item.type === 'Benefits').length >
                 0 && (
                 <Box marginBottom={4}>
                   <Box display="flex" alignItems="center" marginBottom={2}>
@@ -238,7 +195,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                     <Tag variant="blue">3.2</Tag>
                   </Box>
 
-                  {data?.income
+                  {incomeData
                     .filter(item => item.type === 'Benefits')
                     .map((item, index) => (
                       <Box
@@ -287,7 +244,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                       </Text>
                       <Text fontWeight="semiBold" color="blue600" textAlign="right">
                         {formatIcelandicAmount(
-                          data.income
+                          incomeData
                             .filter(item => item.type === 'Benefits')
                             .reduce((sum, item) => sum + item.amount, 0)
                         )}
@@ -298,19 +255,15 @@ export const Overview = ({ form }: { form: FormProps }) => {
               )}
 
               {/* Add divider between Benefits and Other Income */}
-              {data?.income?.filter(item => item.type === 'Benefits').length > 0 &&
-                data?.income?.filter(
-                  item => item.type !== 'Wages' && item.type !== 'Benefits'
-                ).length > 0 && (
+              {incomeData.filter(item => item.type === 'Benefits').length > 0 &&
+                incomeData.filter(item => item.type === 'Other').length > 0 && (
                   <Box marginTop={3} marginBottom={8}>
                     <Divider />
                   </Box>
                 )}
               
               {/* Other Income */}
-              {data?.income?.filter(
-                item => item.type !== 'Wages' && item.type !== 'Benefits'
-              ).length > 0 && (
+              {incomeData.filter(item => item.type === 'Other').length > 0 && (
                 <Box>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
@@ -319,10 +272,8 @@ export const Overview = ({ form }: { form: FormProps }) => {
                     <Tag variant="blue">3.3</Tag>
                   </Box>
 
-                  {data.income
-                    .filter(
-                      item => item.type !== 'Wages' && item.type !== 'Benefits'
-                    )
+                  {incomeData
+                    .filter(item => item.type === 'Other')
                     .map((item, index) => (
                       <Box
                         key={`other-income-${index}`}
@@ -379,11 +330,8 @@ export const Overview = ({ form }: { form: FormProps }) => {
                       <Text fontWeight="semiBold">Samtals aðrar tekjur</Text>
                       <Text fontWeight="semiBold" color="blue600" textAlign="right">
                         {formatIcelandicAmount(
-                          data.income
-                            .filter(
-                              item =>
-                                item.type !== 'Wages' && item.type !== 'Benefits'
-                            )
+                          incomeData
+                            .filter(item => item.type === 'Other')
                             .reduce((sum, item) => sum + item.amount, 0)
                         )}
                       </Text>
@@ -402,7 +350,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                   <Text fontWeight="semiBold">Heildartekjur</Text>
                   <Text fontWeight="semiBold" color="blue600" textAlign="right">
                     {formatIcelandicAmount(
-                      data.income.reduce((sum, item) => sum + item.amount, 0)
+                      incomeData.reduce((sum, item) => sum + item.amount, 0)
                     )}
                   </Text>
                 </Box>

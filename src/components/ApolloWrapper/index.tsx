@@ -4,7 +4,7 @@ import { ApolloProvider, ApolloClient, InMemoryCache, HttpLink } from '@apollo/c
 
 const apolloClient = new ApolloClient({
   link: new HttpLink({
-    uri: process.env.GRAPHQL_URL ?? 'http://localhost:3002/graphql',
+    uri: process.env.GRAPHQL_URL ?? 'http://bidtaxapplicati-zmmdkeww-1502756041.eu-west-2.elb.amazonaws.com/graphql',
   }),
   cache: new InMemoryCache(),
 })

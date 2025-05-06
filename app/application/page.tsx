@@ -12,16 +12,19 @@ import {
   Text,
 } from '@island.is/island-ui/core'
 import { formSteps } from '@/components/FormSteps/formSteps'
+import { IncomeItem } from '@/constants/incomeData'
 import Header from '../../src/components/Header'
 import taxLogo from '../../assets/taxLogo.png'
 import { useSsn } from '../context/SsnContext'
 
 interface FormData {
   consent?: boolean
+  consentChanged?: boolean
   name?: string
   nationalId?: string
   email?: string
   phone?: string
+  incomes?: IncomeItem[]
   [key: string]: unknown
 }
 
@@ -48,6 +51,25 @@ export default function ApplicationPage() {
     }
   }, [stepId])
 
+  // Load data from localStorage on initial render
+  useEffect(() => {
+    try {
+      // Load income data from localStorage if available
+      const storedIncomeData = localStorage.getItem('incomeData')
+      if (storedIncomeData) {
+        const parsedIncomeData = JSON.parse(storedIncomeData)
+        
+        // Update the form data with the saved income data
+        setFormData(prevData => ({
+          ...prevData,
+          incomes: parsedIncomeData
+        }))
+      }
+    } catch (error) {
+      console.error('Error loading data from localStorage:', error)
+    }
+  }, [])
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -67,30 +89,48 @@ export default function ApplicationPage() {
     }
   }
 
+  const currentStep = formSteps[activeStepIndex]
+
   const goToNextStep = () => {
-    const currentStep = formSteps[activeStepIndex]
-    if (currentStep && currentStep.next) {
-      // Validate DataCollection step - consent checkbox
-      if (currentStep.id === 'dataCollection' && !formData.consent) {
+    const nextStepId = currentStep.next
+    if (!nextStepId) {
+      return
+    }
+
+    // Handle data collection step - set consentChanged flag when moving from data collection
+    if (currentStep.id === 'dataCollection') {
+      // Validate consent checkbox
+      if (!formData.consent) {
         setValidationError('Vinsamlegast samþykktu að gögn verði sótt rafrænt.')
         return
       }
       
-      // Clear any validation errors when moving to next step
+      // Clear any validation errors when continuing
       setValidationError(null)
-      router.push(`?step=${currentStep.next}`)
+      
+      // Set the flag and navigate with a small delay to ensure data fetching starts
+      setFormData(prevData => ({
+        ...prevData,
+        consentChanged: true
+      }))
+      
+      setTimeout(() => {
+        router.push(`/application?step=${nextStepId}`)
+      }, 100)
+    } else {
+      // For other steps, navigate immediately
+      setValidationError(null)
+      router.push(`/application?step=${nextStepId}`)
     }
   }
 
   const goToPrevStep = () => {
-    const currentStep = formSteps[activeStepIndex]
     if (currentStep && currentStep.prev) {
       router.push(`?step=${currentStep.prev}`)
     }
   }
 
   const renderStep = () => {
-    const currentStep = formSteps[activeStepIndex]
     if (!currentStep) return <div>Step not found</div>
 
     const StepComponent = currentStep.component
@@ -134,9 +174,9 @@ export default function ApplicationPage() {
   }
 
   const formStepperSections = formSteps
-    .filter(step => step.title) // Only include steps with titles
+    .filter(step => step.title) 
     .map(step => ({
-      name: step.title || '', // Provide empty string as fallback
+      name: step.title || '',
       children: [],
     }))
 

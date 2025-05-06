@@ -1,24 +1,49 @@
-import React from 'react'
-import {
-  Box,
-  Checkbox,
-  Icon,
-  Text,
-} from '@island.is/island-ui/core'
+import React, { useEffect } from 'react'
+import { Box, Checkbox, Icon, Text } from '@island.is/island-ui/core'
+import { useTaxData } from '@/hooks/useTaxData'
 
 interface FormProps {
   data: {
     consent?: boolean
+    consentChanged?: boolean
     [key: string]: unknown
   }
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-export const DataCollection = ({ form }: {
-  form: FormProps
-}) => {
+export const DataCollection = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
-  
+  const { fetchTaxData, isLoading, isDataFetched } = useTaxData({
+    onChange,
+  })
+
+  // Called when the Continue button is clicked from the parent
+  useEffect(() => {
+    if (
+      data.consentChanged === true &&
+      data.consent === true &&
+      !isLoading &&
+      !isDataFetched
+    ) {
+      fetchTaxData()
+    }
+  }, [
+    data.consentChanged,
+    data.consent,
+    isLoading,
+    isDataFetched,
+    fetchTaxData,
+  ])
+
+  const handleConsentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    onChange({
+      target: {
+        name: 'consent',
+        value: event.target.checked,
+      },
+    } as unknown as React.ChangeEvent<HTMLInputElement>)
+  }
+
   return (
     <Box>
       <Text variant="h2" marginBottom={3}>
@@ -48,15 +73,16 @@ export const DataCollection = ({ form }: {
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       </Text>
 
-      <Box marginBottom={7} marginTop={10}>
+      <Box marginBottom={7} marginTop={4}>
         <Checkbox
-          label="Ég samþykki að gögn verði sótt rafrænt"
           name="consent"
-          value="consent"
-          large
-          checked={data.consent || false}
-          onChange={onChange}
+          label="Ég samþykki að gögn verði sótt rafrænt"
+          checked={!!data.consent}
           backgroundColor="blue"
+          onChange={handleConsentChange}
+          hasError={false}
+          errorMessage=""
+          large
         />
       </Box>
     </Box>
