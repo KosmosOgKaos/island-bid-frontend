@@ -5,10 +5,13 @@ import {
   GridRow,
   Input,
   Stack,
+  Tag,
   Text,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
 import { CurrencyInput } from '@/components/CurrencyInput'
+import { IncomeItem, defaultIncomeData } from '@/constants/incomeData'
+
 interface FormProps {
   data: {
     incomes?: IncomeItem[]
@@ -18,75 +21,6 @@ interface FormProps {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => void
 }
-interface IncomeItem {
-  id: number
-  type: string
-  payer: string | null
-  amount: number
-  currency: string
-  explanation: string | null
-  submissionId: number
-  createdAt: string
-  updatedAt: string
-}
-
-const defaultIncomeData: IncomeItem[] = [
-  {
-    id: 1,
-    type: 'Wages',
-    payer: 'Norðurljós Software ehf',
-    amount: 9360000,
-    currency: 'ISK',
-    explanation: null,
-    submissionId: 3,
-    createdAt: '2025-05-05T18:22:03.514Z',
-    updatedAt: '2025-05-05T18:22:03.514Z',
-  },
-  {
-    id: 2,
-    type: 'Wages',
-    payer: 'Mús & Merki ehf.',
-    amount: 900000,
-    currency: 'ISK',
-    explanation: null,
-    submissionId: 3,
-    createdAt: '2025-05-05T18:22:03.514Z',
-    updatedAt: '2025-05-05T18:22:03.514Z',
-  },
-  {
-    id: 3,
-    type: 'Benefits',
-    payer: null,
-    amount: 120000,
-    currency: 'ISK',
-    explanation: 'Dagpeningar',
-    submissionId: 3,
-    createdAt: '2025-05-05T18:22:03.514Z',
-    updatedAt: '2025-05-05T18:22:03.514Z',
-  },
-  {
-    id: 4,
-    type: 'Other',
-    payer: 'Norðurljós Software ehf',
-    amount: 75000,
-    currency: 'ISK',
-    explanation: 'Íþróttastyrkur',
-    submissionId: 3,
-    createdAt: '2025-05-05T18:22:03.514Z',
-    updatedAt: '2025-05-05T18:22:03.514Z',
-  },
-  {
-    id: 5,
-    type: 'Other',
-    payer: 'VR',
-    amount: 130000,
-    currency: 'ISK',
-    explanation: 'Starfsmenntastyrkur',
-    submissionId: 3,
-    createdAt: '2025-05-05T18:22:03.514Z',
-    updatedAt: '2025-05-05T18:22:03.514Z',
-  },
-]
 
 export const Income = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
@@ -164,11 +98,19 @@ export const Income = ({ form }: { form: FormProps }) => {
         consectetur adipisicing elit. Cumque optio necessitatibus omnis.
       </Text>
 
-      <Stack space={5}>
+      <Stack space={7}>
         {/* Wages Section */}
         <Box>
-          <Text variant="h3">3.1 - Tekjur</Text>
-          <Text marginBottom={3}>Launtekjur og starfstengdar greiðslur</Text>
+          <Box display="flex">
+            <Box marginRight={1}>
+              <Text variant="h3">Launatekjur og starfstengdar greiðslur</Text>
+            </Box>
+            <Tag>3.1</Tag>
+          </Box>
+          <Text marginBottom={3}>
+            T.d. ákvæðislaun, biðlaun, nefndarlaun, stjórnarlaun, launabætur,
+            staðaruppbót, o.fl.
+          </Text>
           {groupedIncome.Wages.map(item => (
             <GridRow key={`wages-${item.id}`}>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
@@ -193,7 +135,7 @@ export const Income = ({ form }: { form: FormProps }) => {
             </GridRow>
           ))}
           <GridRow>
-            <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+            <GridColumn span={['12/12', '12/12']}>
               <Input
                 name="wages-total"
                 label="Samtals"
@@ -208,10 +150,16 @@ export const Income = ({ form }: { form: FormProps }) => {
 
         {/* Benefits Section */}
         <Box>
-          <Text variant="h3">3.2 - Tekjur</Text>
+          <Box display="flex">
+            <Box marginRight={1}>
+              <Text variant="h3">Starfstengd hlunnindi</Text>
+            </Box>
+            <Tag>3.2</Tag>
+          </Box>
           <Text marginBottom={3}>
-            Ökutækjastyrkur, dagpeningar og hlunnindi
+            T.d. ökutækjastyrkur, dagpeningar og/eða önnur hlunnindi{' '}
           </Text>
+
           {groupedIncome.Benefits.map(item => (
             <GridRow key={`benefits-${item.id}`}>
               <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
@@ -236,7 +184,7 @@ export const Income = ({ form }: { form: FormProps }) => {
             </GridRow>
           ))}
           <GridRow>
-            <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+            <GridColumn span={['12/12', '12/12']}>
               <Input
                 name="benefits-total"
                 label="Samtals"
@@ -251,9 +199,14 @@ export const Income = ({ form }: { form: FormProps }) => {
 
         {/* Other Income Section */}
         <Box>
-          <Text variant="h3">3.3 - Tekjur</Text>
+          <Box display="flex">
+            <Box marginRight={1}>
+              <Text variant="h3">Aðrar tekjur</Text>
+            </Box>
+            <Tag>3.3</Tag>
+          </Box>
           <Text marginBottom={3}>
-            Lífeyrisgreiðslur, greiðslur frá Tryggingastofnun, aðrar
+            T.d. lífeyrisgreiðslur, greiðslur frá Tryggingastofnun, aðrar
             bótagreiðslur, styrkir o.fl.
           </Text>
           {groupedIncome.Other.map(item => (
@@ -280,7 +233,7 @@ export const Income = ({ form }: { form: FormProps }) => {
             </GridRow>
           ))}
           <GridRow>
-            <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+            <GridColumn span={['12/12', '12/12']}>
               <Input
                 name="other-total"
                 label="Samtals"
@@ -295,14 +248,14 @@ export const Income = ({ form }: { form: FormProps }) => {
 
         {/* Grand Total Section */}
         <Box>
-          <Text variant="h3" marginBottom={3}>
-            Heildartekjur ársins
+          <Text variant="h3" marginBottom={2}>
+            Heildartekjur
           </Text>
           <GridRow>
             <GridColumn span={['12/12', '12/12']}>
               <Input
                 name="income-grand-total"
-                label="Samtals"
+                label="Samanlagðar heildartekjur"
                 value={formatIcelandicAmount(totals.grandTotal)}
                 type="text"
                 readOnly
