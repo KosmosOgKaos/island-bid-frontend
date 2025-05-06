@@ -28,7 +28,6 @@ export * from './lib/AlertBanner/AlertBanner'
 export * from './lib/Toast/Toast'
 
 // Components
-export * from './lib/AsyncSearch/AsyncSearch'
 export * from './lib/Logo/Logo'
 export * from './lib/LoadingDots/LoadingDots'
 export * from './lib/Page/Page'

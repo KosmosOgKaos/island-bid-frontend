@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import Head from 'next/head'
 import {
   Box,
   FormStepper,
@@ -10,11 +9,12 @@ import {
   GridRow,
   GridColumn,
   Button,
-  Header,
-  Text
+  Text,
 } from '@island.is/island-ui/core'
 import { formSteps } from '@/components/FormSteps/formSteps'
+import Header from '../../src/components/Header'
 import taxLogo from '../../assets/taxLogo.png'
+
 interface FormData {
   consent?: boolean
   name?: string
@@ -125,7 +125,7 @@ export default function ApplicationPage() {
       <Box background="white" marginBottom={5}>
         <GridContainer>
           <Header
-            authenticated
+            authenticated={true}
             userName="Jökull Þórðarson"
             info={{
               title: 'Skatturinn',
@@ -135,12 +135,6 @@ export default function ApplicationPage() {
           />
         </GridContainer>
       </Box>
-
-      <Head>
-        <title>Island.is Umsókn</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <GridContainer>
         <GridRow direction={['columnReverse', 'row']}>
           <GridColumn span={['12/12', '12/12', '9/12']}>
@@ -157,7 +151,7 @@ export default function ApplicationPage() {
           </GridColumn>
 
           <GridColumn span={['12/12', '12/12', '3/12']}>
-            <Box 
+            <Box
               display="flex"
               flexDirection="column"
               height="full"
@@ -165,17 +159,19 @@ export default function ApplicationPage() {
               paddingBottom={2}
               marginTop={[0, 0, 3]}
             >
-              <Box paddingTop={[0, 0, 10]} position="sticky" top={0} style={{ marginTop: '-20px' }}>
+              <Box
+                paddingTop={[0, 0, 10]}
+                position="sticky"
+                top={0}
+                style={{ marginTop: '-20px' }}
+              >
                 <FormStepper
                   sections={formStepperSections}
                   activeSection={activeStepIndex}
                 />
               </Box>
-              
-              <Box 
-                display={['none', 'none', 'block']} 
-                marginTop={8}
-              >
+
+              <Box display={['none', 'none', 'block']} marginTop={8}>
                 <Box
                   background="purple100"
                   borderRadius="large"

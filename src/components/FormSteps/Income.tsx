@@ -8,7 +8,7 @@ import {
   Text,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
-import { CurrencyInput } from '@/components/CurrencyInput/CurrencyInput'
+import { CurrencyInput } from '@/components/CurrencyInput'
 interface FormProps {
   data: {
     incomes?: IncomeItem[]
