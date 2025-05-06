@@ -1,7 +1,7 @@
 import { Information } from './Information'
 import { DataCollection } from './DataCollection'
 import { Income } from './Income'
-import { Assets } from './Assets'
+import { Properties } from './Properties'
 import { Debts } from './Debts'
 import { Overview } from './Overview'
 import { Done } from './Done'
@@ -32,7 +32,7 @@ export const formSteps = [
     title: 'Eignir',
     prev: 'income',
     next: 'debts',
-    component: Assets,
+    component: Properties,
   },
   {
     id: 'debts',

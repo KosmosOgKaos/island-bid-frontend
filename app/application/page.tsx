@@ -117,7 +117,7 @@ export default function ApplicationPage() {
             </Button>
           )}
           {currentStep.next && (
-            <Button onClick={goToNextStep}>Halda áfram</Button>
+            <Button onClick={goToNextStep} icon="arrowForward">Halda áfram</Button>
           )}
         </Box>
       </Box>
@@ -136,6 +136,7 @@ export default function ApplicationPage() {
       flexDirection="column"
       style={{ minHeight: '100vh' }}
       width="full"
+      paddingBottom={30}
     >
       <Box background="white" marginBottom={5}>
         <GridContainer>
