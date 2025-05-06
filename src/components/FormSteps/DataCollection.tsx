@@ -56,6 +56,7 @@ export const DataCollection = ({ form }: {
           large
           checked={data.consent || false}
           onChange={onChange}
+          backgroundColor="blue"
         />
       </Box>
     </Box>
