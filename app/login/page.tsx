@@ -8,7 +8,6 @@ import {
   GridRow,
   GridColumn,
   Page,
-  Header,
   Button,
   Text,
   Stack,
@@ -22,13 +21,6 @@ export default function LoginPage() {
 
   return (
     <Page>
-      <GridContainer>
-        <GridRow>
-          <GridColumn span="12/12">
-            <Header />
-          </GridColumn>
-        </GridRow>
-      </GridContainer>
       <GridContainer>
         <Box paddingY={[3, 3, 6]}>
           <GridRow>

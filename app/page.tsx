@@ -11,9 +11,10 @@ import {
   Stack,
   Breadcrumbs,
   Link,
-  Header,
 } from '@island.is/island-ui/core'
-import { ApolloWrapper } from '@/components/ApolloWrapper/ApolloWrapper'
+import { ApolloWrapper } from '@/components/ApolloWrapper'
+import Header from '../src/components/Header'
+import Footer from '../src/components/Footer'
 
 import taxLogo from '../assets/taxLogo.png'
 
@@ -21,13 +22,7 @@ export default function Home() {
   return (
     <ApolloWrapper>
       <Page>
-        <GridContainer>
-          <GridRow>
-            <GridColumn span="12/12">
-              <Header />
-            </GridColumn>
-          </GridRow>
-        </GridContainer>
+        <Header />
         <GridContainer>
           <Box
             display="flex"
@@ -37,30 +32,32 @@ export default function Home() {
             position="relative"
           >
             <Box display={['none', 'none', 'block']}>
-              <Box
-                background="purple100"
-                borderRadius="large"
-                padding={4}
-                display="flex"
-                alignItems="center"
-              >
-                <Box style={{ flex: '0 0 50px' }} marginRight={3}>
-                  <Box
-                    component="img"
-                    alt="Tax logo"
-                    src={taxLogo.src}
-                    width="full"
-                  />
+              <Link href="https://www.skatturinn.is/">
+                <Box
+                  background="purple100"
+                  borderRadius="large"
+                  padding={4}
+                  display="flex"
+                  alignItems="center"
+                >
+                  <Box style={{ flex: '0 0 50px' }} marginRight={3}>
+                    <Box
+                      component="img"
+                      alt="Tax logo"
+                      src={taxLogo.src}
+                      width="full"
+                    />
+                  </Box>
+                  <Box>
+                    <Text variant="eyebrow" color="purple600">
+                      Þjónustuaðili
+                    </Text>
+                    <Text variant="h3" color="purple600">
+                      Skatturinn
+                    </Text>
+                  </Box>
                 </Box>
-                <Box>
-                  <Text variant="eyebrow" color="purple600">
-                    Þjónustuaðili
-                  </Text>
-                  <Text variant="h3" color="purple600">
-                    Skatturinn
-                  </Text>
-                </Box>
-              </Box>
+              </Link>
             </Box>
             <GridContainer>
               <GridRow>
@@ -144,6 +141,7 @@ export default function Home() {
             </GridContainer>
           </Box>
         </GridContainer>
+        <Footer />
       </Page>
     </ApolloWrapper>
   )
