@@ -1,34 +1,56 @@
-import { Step2 } from './Step2'
+import { Information } from './Information'
 import { DataCollection } from './DataCollection'
-import { Step3 } from './Step3'
-import { Step4 } from './Step4'
+import { Income } from './Income'
+import { Assets } from './Assets'
+import { Debts } from './Debts'
+import { Overview } from './Overview'
+import { Done } from './Done'
 
 export const formSteps = [
   {
-    id: 'step1',
-    title: 'Skref 1',
-    next: 'step2',
+    id: 'dataCollection',
+    title: 'Gagnaöflun',
+    next: 'information',
     component: DataCollection,
   },
   {
-    id: 'step2',
-    title: 'Skref 2',
-    prev: 'step1',
-    next: 'step3',
-    component: Step2,
+    id: 'information',
+    title: 'Upplýsingar',
+    prev: 'dataCollection',
+    next: 'income',
+    component: Information,
   },
   {
-    id: 'step3',
-    title: 'Skref 3',
-    prev: 'step2',
-    next: 'step4',
-    component: Step3,
+    id: 'income',
+    title: 'Tekjur',
+    prev: 'information',
+    next: 'assets',
+    component: Income,
   },
   {
-    id: 'step4',
-    title: 'Skref 4',
-    prev: 'step3',
-    component: Step4,
+    id: 'assets',
+    title: 'Eignir',
+    prev: 'income',
+    next: 'debts',
+    component: Assets,
+  },
+  {
+    id: 'debts',
+    title: 'Skuldir',
+    prev: 'assets',
+    next: 'overview',
+    component: Debts,
+  },
+  {
+    id: 'overview',
+    title: 'Yfirlit',
+    prev: 'assets',
+    next: 'done',
+    component: Overview,
+  },
+  {
+    id: 'done',
+    title: 'Umsókn móttekin',
+    component: Done,
   },
 ]
-
