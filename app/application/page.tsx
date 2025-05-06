@@ -143,7 +143,7 @@ export default function ApplicationPage() {
       </Head>
 
       <GridContainer>
-        <GridRow>
+        <GridRow direction={['columnReverse', 'row']}>
           <GridColumn span={['12/12', '12/12', '9/12']}>
             <Box
               background="white"
