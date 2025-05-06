@@ -124,10 +124,12 @@ export default function ApplicationPage() {
     )
   }
 
-  const formStepperSections = formSteps.map(step => ({
-    name: step.title,
-    children: [],
-  }))
+  const formStepperSections = formSteps
+    .filter(step => step.title) // Only include steps with titles
+    .map(step => ({
+      name: step.title || '', // Provide empty string as fallback
+      children: [],
+    }))
 
   return (
     <Box
@@ -166,6 +168,7 @@ export default function ApplicationPage() {
             </Box>
           </GridColumn>
 
+          {activeStepIndex !== formSteps.length - 1 && (
           <GridColumn span={['12/12', '12/12', '3/12']}>
             <Box
               display="flex"
@@ -216,6 +219,7 @@ export default function ApplicationPage() {
               </Box>
             </Box>
           </GridColumn>
+          )}
         </GridRow>
       </GridContainer>
     </Box>
