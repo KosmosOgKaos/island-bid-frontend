@@ -30,6 +30,7 @@ export default function ApplicationPage() {
   const stepId = searchParams?.get('step') || formSteps[0].id
   const [activeStepIndex, setActiveStepIndex] = useState(0)
   const [formData, setFormData] = useState<FormData>({})
+  const [validationError, setValidationError] = useState<string | null>(null)
 
   useEffect(() => {
     const index = formSteps.findIndex(step => step.id === stepId)
@@ -60,6 +61,14 @@ export default function ApplicationPage() {
   const goToNextStep = () => {
     const currentStep = formSteps[activeStepIndex]
     if (currentStep && currentStep.next) {
+      // Validate DataCollection step - consent checkbox
+      if (currentStep.id === 'dataCollection' && !formData.consent) {
+        setValidationError('Vinsamlegast samþykktu að gögn verði sótt rafrænt.')
+        return
+      }
+      
+      // Clear any validation errors when moving to next step
+      setValidationError(null)
       router.push(`?step=${currentStep.next}`)
     }
   }
@@ -85,6 +94,12 @@ export default function ApplicationPage() {
             onChange: handleInputChange,
           }}
         />
+        
+        {validationError && (
+          <Text variant="eyebrow" color="red600">
+            {validationError}
+          </Text>
+        )}
 
         <Box
           paddingY={5}
