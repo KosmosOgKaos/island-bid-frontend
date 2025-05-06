@@ -142,13 +142,13 @@ export default function ApplicationPage() {
       </Head>
 
       <GridContainer>
-        <GridRow>
+        <GridRow direction={['columnReverse', 'row']}>
           <GridColumn span={['12/12', '12/12', '9/12']}>
             <Box
               background="white"
               borderRadius="large"
-              paddingTop={8}
-              paddingX={12}
+              paddingTop={[5, 8, 8]}
+              paddingX={[3, 12, 12]}
               display="flex"
               flexDirection="column"
             >
@@ -163,8 +163,9 @@ export default function ApplicationPage() {
               height="full"
               justifyContent="spaceBetween"
               paddingBottom={2}
+              marginTop={[0, 0, 3]}
             >
-              <Box paddingTop={[0, 0, 10]} position="sticky" top={0}>
+              <Box paddingTop={[0, 0, 10]} position="sticky" top={0} style={{ marginTop: '-20px' }}>
                 <FormStepper
                   sections={formStepperSections}
                   activeSection={activeStepIndex}

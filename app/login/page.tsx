@@ -46,7 +46,6 @@ export default function LoginPage() {
                       borderWidth="standard"
                       borderColor="blue200"
                       borderStyle="solid"
-                      width="half"
                       textAlign="center"
                       display="flex"
                       flexDirection="column"
@@ -74,7 +73,7 @@ export default function LoginPage() {
                         <Button
                           onClick={() => router.push('/application')}
                           fluid
-                          disabled={!phoneNumber}
+                          disabled={!phoneNumber || phoneNumber.length < 7}
                         >
                           Auðkenna
                         </Button>
