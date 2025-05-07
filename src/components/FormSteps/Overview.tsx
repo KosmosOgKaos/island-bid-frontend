@@ -52,7 +52,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
       <Box display="flex" justifyContent="spaceBetween" alignItems="center">
         <Box display="flex" alignItems="center">
           <Box marginRight={1}>
-            <Text variant="h3">{title}</Text>
+            <Text variant="h3" as="h3">
+              {title}
+            </Text>
           </Box>
           <Tag variant="blue">{number}</Tag>
         </Box>
@@ -85,7 +87,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
   return (
     <Box>
-      <Text variant="h2" marginBottom={2}>
+      <Text variant="h2" as="h2" marginBottom={2}>
         Yfirlit
       </Text>
       <Text marginBottom={5}>
@@ -137,7 +139,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                 <Box>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
-                      <Text variant="h4">
+                      <Text variant="h4" as="h4">
                         Launatekjur og starfstengdar greiðslur
                       </Text>
                     </Box>
@@ -170,7 +172,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
                   <GridRow>
                     <GridColumn span="6/12">
-                      <Text variant="h4">Samtals</Text>
+                      <Text variant="h4" as="h4">
+                        Samtals
+                      </Text>
                     </GridColumn>
                     <GridColumn span={['12/12', '6/12']}>
                       <Text fontWeight="semiBold" color="blue400">
@@ -200,7 +204,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
                 <Box>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
-                      <Text variant="h4">Dagpeningar og hlunnindi</Text>
+                      <Text variant="h4" as="h4">
+                        Dagpeningar og hlunnindi
+                      </Text>
                     </Box>
                     <Tag variant="blue">3.2</Tag>
                   </Box>
@@ -240,7 +246,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
                   <GridRow>
                     <GridColumn span="6/12">
-                      <Text variant="h4">Samtals</Text>
+                      <Text variant="h4" as="h4">
+                        Samtals
+                      </Text>
                     </GridColumn>
                     <GridColumn span={['12/12', '6/12']}>
                       <Text fontWeight="semiBold" color="blue400">
@@ -268,7 +276,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
                 <Box>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
-                      <Text variant="h4">Aðrar tekjur</Text>
+                      <Text variant="h4" as="h4">
+                        Aðrar tekjur
+                      </Text>
                     </Box>
                     <Tag variant="blue">3.3</Tag>
                   </Box>
@@ -319,7 +329,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
                   <GridRow>
                     <GridColumn span="6/12">
-                      <Text variant="h4">Samtals</Text>
+                      <Text variant="h4" as="h4">
+                        Samtals
+                      </Text>
                     </GridColumn>
                     <GridColumn span={['12/12', '6/12']}>
                       <Text fontWeight="semiBold" color="blue400">
@@ -340,7 +352,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
               </Box>
               <GridRow>
                 <GridColumn span="6/12">
-                  <Text variant="h3">Tekjur samtals</Text>
+                  <Text variant="h3" as="h3">
+                    Tekjur samtals
+                  </Text>
                 </GridColumn>
                 <GridColumn span={['12/12', '6/12']}>
                   <Text fontWeight="semiBold" color="blue400" variant="h3">
@@ -368,7 +382,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
                 <Box>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
-                      <Text variant="h4">Innlendar fasteignir</Text>
+                      <Text variant="h4" as="h4">
+                        Innlendar fasteignir
+                      </Text>
                     </Box>
                     <Tag>4.1</Tag>
                   </Box>
@@ -408,7 +424,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
                   <GridRow>
                     <GridColumn span="6/12">
-                      <Text variant="h4">Samtals</Text>
+                      <Text variant="h4" as="h4">
+                        Samtals
+                      </Text>
                     </GridColumn>
                     <GridColumn span={['12/12', '6/12']}>
                       <Text fontWeight="semiBold" color="blue400">
@@ -440,7 +458,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
                 <Box>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
-                      <Text variant="h4">Bifreiðir</Text>
+                      <Text variant="h4" as="h4">
+                        Bifreiðir
+                      </Text>
                     </Box>
                     <Tag>4.2</Tag>
                   </Box>
@@ -482,7 +502,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
                   <GridRow>
                     <GridColumn span="6/12">
-                      <Text variant="h4">Samtals</Text>
+                      <Text variant="h4" as="h4">
+                        Samtals
+                      </Text>
                     </GridColumn>
                     <GridColumn span={['12/12', '6/12']}>
                       <Text fontWeight="semiBold" color="blue400">
@@ -508,20 +530,22 @@ export const Overview = ({ form }: { form: FormProps }) => {
                 <Divider />
               </Box>
               <GridRow>
-              <GridColumn span="6/12">
-                <Text variant="h3">Eignir samtals</Text>
-              </GridColumn>
-              <GridColumn span={['12/12', '6/12']}>
-                <Text fontWeight="semiBold" color="blue400" variant="h3">
-                  {formatIcelandicAmount(
-                    data.properties.reduce(
-                      (sum, prop) => sum + (prop.value || 0),
-                      0
-                    )
-                  )}
-                </Text>
-              </GridColumn>
-            </GridRow>
+                <GridColumn span="6/12">
+                  <Text variant="h3" as="h3">
+                    Eignir samtals
+                  </Text>
+                </GridColumn>
+                <GridColumn span={['12/12', '6/12']}>
+                  <Text fontWeight="semiBold" color="blue400" variant="h3">
+                    {formatIcelandicAmount(
+                      data.properties.reduce(
+                        (sum, prop) => sum + (prop.value || 0),
+                        0
+                      )
+                    )}
+                  </Text>
+                </GridColumn>
+              </GridRow>
             </>
           )}
         </Box>
@@ -542,7 +566,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
                 <Box>
                   <Box display="flex" alignItems="center" marginBottom={3}>
                     <Box marginRight={1}>
-                      <Text variant="h4">Vaxtagjöld vegna íbúðarhúsnæðis til eigin nota</Text>
+                      <Text variant="h4" as="h4">
+                        Vaxtagjöld vegna íbúðarhúsnæðis til eigin nota
+                      </Text>
                     </Box>
                     <Tag variant="blue">5.1</Tag>
                   </Box>
@@ -586,7 +612,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                             />
                           </GridColumn>
                         </GridRow>
-                        
+
                         <GridRow>
                           <GridColumn span="6/12" paddingBottom={2}>
                             <FieldItem
@@ -604,7 +630,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                             />
                           </GridColumn>
                         </GridRow>
-                        
+
                         <GridRow>
                           <GridColumn span="6/12" paddingBottom={2}>
                             <FieldItem
@@ -612,11 +638,14 @@ export const Overview = ({ form }: { form: FormProps }) => {
                               value={debt.loanDurationYears}
                             />
                           </GridColumn>
-                        </GridRow><GridRow>
+                        </GridRow>
+                        <GridRow>
                           <GridColumn span="6/12" paddingBottom={2}>
                             <FieldItem
                               label="Heildargreiðslur ársins"
-                              value={formatIcelandicAmount(debt.yearPaymentTotal || 0)}
+                              value={formatIcelandicAmount(
+                                debt.yearPaymentTotal || 0
+                              )}
                             />
                           </GridColumn>
                           <GridColumn
@@ -625,16 +654,20 @@ export const Overview = ({ form }: { form: FormProps }) => {
                           >
                             <FieldItem
                               label="Afborganir af nafnverði"
-                              value={formatIcelandicAmount(debt.nominalPaymentTotal || 0)}
+                              value={formatIcelandicAmount(
+                                debt.nominalPaymentTotal || 0
+                              )}
                             />
                           </GridColumn>
                         </GridRow>
-                        
+
                         <GridRow>
                           <GridColumn span="6/12" paddingBottom={2}>
                             <FieldItem
                               label="Vaxtagjöld"
-                              value={formatIcelandicAmount(debt.interestPaymentTotal)}
+                              value={formatIcelandicAmount(
+                                debt.interestPaymentTotal
+                              )}
                             />
                           </GridColumn>
                           <GridColumn
@@ -652,7 +685,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
                   <GridRow>
                     <GridColumn span="6/12">
-                      <Text variant="h4">Samtals</Text>
+                      <Text variant="h4" as="h4">
+                        Samtals
+                      </Text>
                     </GridColumn>
                     <GridColumn span={['12/12', '6/12']}>
                       <Text fontWeight="semiBold" color="blue400">
@@ -683,7 +718,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
                 <Box>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
-                      <Text variant="h4">Aðrar skuldir</Text>
+                      <Text variant="h4" as="h4">
+                        Aðrar skuldir
+                      </Text>
                     </Box>
                     <Tag variant="blue">5.2</Tag>
                   </Box>
@@ -694,10 +731,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                       <Box key={`other-debt-${index}`}>
                         <GridRow>
                           <GridColumn span="12/12">
-                            <FieldItem
-                              label=""
-                              value={debt.description}
-                            />
+                            <FieldItem label="" value={debt.description} />
                           </GridColumn>
                         </GridRow>
 
@@ -725,7 +759,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
                   <GridRow>
                     <GridColumn span="6/12">
-                      <Text variant="h4">Samtals</Text>
+                      <Text variant="h4" as="h4">
+                        Samtals
+                      </Text>
                     </GridColumn>
                     <GridColumn span={['12/12', '6/12']}>
                       <Text fontWeight="semiBold" color="blue400">
@@ -746,7 +782,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
               </Box>
               <GridRow>
                 <GridColumn span="6/12">
-                  <Text variant="h3">Skuldir samtals</Text>
+                  <Text variant="h3" as="h3">
+                    Skuldir samtals
+                  </Text>
                 </GridColumn>
                 <GridColumn span={['12/12', '6/12']}>
                   <Text fontWeight="semiBold" color="blue400" variant="h3">

@@ -65,10 +65,7 @@ export const Footer = () => {
               </Link>
             </Stack>
           </GridColumn>
-          <GridColumn
-            span={['12/12', '12/12', '6/12']}
-            paddingTop={[4, 4, 0]}
-          >
+          <GridColumn span={['12/12', '12/12', '6/12']} paddingTop={[4, 4, 0]}>
             <Stack space={2}>
               <Text variant="h5" color="purple600">
                 Hafðu samband
@@ -78,10 +75,7 @@ export const Footer = () => {
                   Sími: 442-1000
                 </Text>
               </Link>
-              <Link
-                href="mailto:skatturinn@skatturinn.is"
-                underline="normal"
-              >
+              <Link href="mailto:skatturinn@skatturinn.is" underline="normal">
                 <Text variant="default" color="purple600">
                   skatturinn@skatturinn.is
                 </Text>

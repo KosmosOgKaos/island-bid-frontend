@@ -28,27 +28,27 @@ export const useTaxData = ({
 
       if (response && response.getLatestTaxReturnInfo) {
         const taxData = response.getLatestTaxReturnInfo
-        
+
         localStorage.setItem('taxData', JSON.stringify(taxData))
 
         onChange({
           target: {
             name: 'taxData',
-            value: taxData
-          }
+            value: taxData,
+          },
         } as FormChangeEvent)
-        
+
         setIsDataFetched(true)
         setFetchError(null)
       } else {
         setFetchError('Engin gögn fundust')
       }
     },
-    onError: (error) => {
+    onError: error => {
       setFetchError(`Villa kom upp við að sækja gögn: ${error.message}`)
       setIsLoading(false)
     },
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
   })
 
   const fetchTaxData = useCallback(() => {
@@ -72,6 +72,6 @@ export const useTaxData = ({
     fetchTaxData,
     isLoading,
     isDataFetched,
-    fetchError
+    fetchError,
   }
 }

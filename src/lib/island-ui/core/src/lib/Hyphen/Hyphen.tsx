@@ -8,13 +8,13 @@ import en from './patterns/en'
 
 type HyphenateText = (
   content: string,
-  options: { minLeft?: number; minRight?: number; locale?: Locale },
+  options: { minLeft?: number; minRight?: number; locale?: Locale }
 ) => string
 
 // TODO: import patterns dynamically
 export const hyphenateText: HyphenateText = (
   content,
-  { minLeft, minRight, locale = 'is' },
+  { minLeft, minRight, locale = 'is' }
 ) => {
   if (minLeft) {
     is.leftmin = minLeft
@@ -46,7 +46,7 @@ export const Hyphen = ({
 }: HyphenProps) => {
   const text = useMemo(
     () => hyphenateText(children, { minRight, minLeft, locale }),
-    [minRight, minLeft, children],
+    [minRight, minLeft, children]
   )
   return <>{text}</>
 }

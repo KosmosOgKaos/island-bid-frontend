@@ -81,10 +81,13 @@ export const Information = ({ form }: { form: FormProps }) => {
   return (
     <Box>
       <Box marginRight={1} marginBottom={2}>
-        <Text variant="h2">Persónuupplýsingar</Text>
+        <Text variant="h2" as="h2">
+          Upplýsingar
+        </Text>
       </Box>
       <Text marginBottom={5}>
-        Vinsamlegast staðfestu persónuupplýsingarnar þínar.
+        Mikilvægt er að skrá réttar upplýsingar svo hægt sé að hafa samband og
+        senda þér tilkynningar um mikilvæg skattaleg málefni.
       </Text>
 
       <GridRow>
