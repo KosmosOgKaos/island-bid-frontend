@@ -7,6 +7,8 @@ import {
   Text,
   Stack,
   Tag,
+  Button,
+  Tooltip,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
 import { CurrencyInput } from '@/components/CurrencyInput'
@@ -224,6 +226,16 @@ export const Debts = ({ form }: { form: FormProps }) => {
                   />
                 </GridColumn>
               </GridRow>
+              <GridRow marginBottom={3}>
+                <GridColumn span={['12/12', '12/12']}>
+                  <Button variant="text" size="small">
+                    Bæta við vaxtagjöldum
+                    <Box marginLeft={1} display="inlineBlock">
+                      <Tooltip text="Bídd'aeins, við erum að vinna í 'essu." />
+                    </Box>
+                  </Button>
+                </GridColumn>
+              </GridRow>
               <GridRow>
                 <GridColumn span={['12/12', '12/12']}>
                   <Input
@@ -294,6 +306,16 @@ export const Debts = ({ form }: { form: FormProps }) => {
                 ))}
 
               {/* Other Debts Total Section */}
+              <GridRow marginBottom={3}>
+                <GridColumn span={['12/12', '12/12']}>
+                  <Button variant="text" size="small">
+                    Bæta við skuldum
+                    <Box marginLeft={1} display="inlineBlock">
+                      <Tooltip text="Bídd'aeins, við erum að vinna í 'essu." />
+                    </Box>
+                  </Button>
+                </GridColumn>
+              </GridRow>
               <GridRow>
                 <GridColumn span={['12/12', '12/12']}>
                   <Input

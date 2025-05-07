@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo } from 'react'
 import {
   Box,
+  Button,
   GridColumn,
   GridRow,
+  Icon,
   Input,
   Stack,
   Tag,
   Text,
+  Tooltip,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
 import { IncomeItem } from '@/lib/types'
@@ -32,23 +35,27 @@ export const Income = ({ form }: { form: FormProps }) => {
     }
 
     try {
-      const storedIncomeData = localStorage.getItem('incomeData')
+      const storedTaxData = localStorage.getItem('taxData')
 
-      if (storedIncomeData) {
-        const incomeData = JSON.parse(storedIncomeData)
-
-        if (Array.isArray(incomeData) && !data.incomes) {
+      if (storedTaxData) {
+        const taxData = JSON.parse(storedTaxData)
+        if (
+          taxData.incomes &&
+          Array.isArray(taxData.incomes) &&
+          !data.incomes
+        ) {
           const event = {
             target: {
               name: 'incomes',
-              value: incomeData,
+              value: taxData.incomes,
             },
           } as unknown as React.ChangeEvent<HTMLInputElement>
           onChange(event)
+          return
         }
       }
-    } catch {
-      // Handle silently
+    } catch (error) {
+      console.error('Error loading income data:', error)
     }
   }, [data.incomes, onChange])
 
@@ -84,16 +91,19 @@ export const Income = ({ form }: { form: FormProps }) => {
     }
   }, [groupedIncome, incomeData])
 
-  const handleIncomeChange = (id: number, amount: string) => {
-    // Convert formatted amount to number
-    const numericAmount = parseInt(amount.replace(/[^0-9]/g, ''), 10)
+  const updateTaxData = (updatedIncome: IncomeItem[]) => {
+    const storedTaxData = localStorage.getItem('taxData')
+    const taxData = storedTaxData ? JSON.parse(storedTaxData) : {}
+    taxData.incomes = updatedIncome
+    localStorage.setItem('taxData', JSON.stringify(taxData))
+  }
 
-    // Create a deep copy of the current income data
+  const handleIncomeChange = (id: number, amount: string) => {
+    const numericAmount = parseInt(amount.replace(/[^0-9]/g, ''), 10)
     const updatedIncome = incomeData.map(item =>
       item.id === id ? { ...item, amount: numericAmount } : item
     )
 
-    // Update the form data
     const event = {
       target: {
         name: 'incomes',
@@ -101,6 +111,70 @@ export const Income = ({ form }: { form: FormProps }) => {
       },
     } as unknown as React.ChangeEvent<HTMLInputElement>
     onChange(event)
+
+    updateTaxData(updatedIncome)
+  }
+
+  const handleWageChange = (id: number, payer: string) => {
+    const updatedIncome = incomeData.map(item =>
+      item.id === id ? { ...item, payer } : item
+    )
+
+    const event = {
+      target: {
+        name: 'incomes',
+        value: updatedIncome,
+      },
+    } as unknown as React.ChangeEvent<HTMLInputElement>
+    onChange(event)
+
+    updateTaxData(updatedIncome)
+  }
+
+  const addWageItem = () => {
+    const maxId = incomeData.reduce(
+      (max, item) => (item.id > max ? item.id : max),
+      0
+    )
+    const newId = maxId + 1
+
+    const newWageItem: IncomeItem = {
+      id: newId,
+      type: 'Wages',
+      payer: '',
+      amount: 0,
+      explanation: 'Manually added',
+      currency: 'ISK',
+      submissionId: 1,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+
+    const updatedIncome = [...incomeData, newWageItem]
+
+    const event = {
+      target: {
+        name: 'incomes',
+        value: updatedIncome,
+      },
+    } as unknown as React.ChangeEvent<HTMLInputElement>
+    onChange(event)
+
+    updateTaxData(updatedIncome)
+  }
+
+  const deleteIncomeItem = (id: number) => {
+    const updatedIncome = incomeData.filter(item => item.id !== id)
+
+    const event = {
+      target: {
+        name: 'incomes',
+        value: updatedIncome,
+      },
+    } as unknown as React.ChangeEvent<HTMLInputElement>
+    onChange(event)
+
+    updateTaxData(updatedIncome)
   }
 
   return (
@@ -130,29 +204,74 @@ export const Income = ({ form }: { form: FormProps }) => {
             Heildartekjur þínar hjá vinnuveitendum áður en tekið er tillit til
             greiddra skatta í staðgreiðslu og iðngjalds í lífeyrissjóð.
           </Text>
-          {groupedIncome.Wages.map((item, index) => (
-            <GridRow key={`wages-${item.id || index}`}>
-              <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                <Input
-                  name={`wages-${item.id || index}-payer`}
-                  label="Heiti fyrirtækis"
-                  value={item.payer || ''}
-                  onChange={() => {}}
-                  type="text"
-                  readOnly
-                />
-              </GridColumn>
-              <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                <CurrencyInput
-                  name={`wages-${item.id}-amount`}
-                  label="Launafjárhæð"
-                  value={formatIcelandicAmount(item.amount)}
-                  onChange={value => handleIncomeChange(item.id, value)}
-                  backgroundColor="blue"
-                />
-              </GridColumn>
-            </GridRow>
-          ))}
+          {groupedIncome.Wages.map((item, index) => {
+            const isManuallyAdded = item.explanation === 'Manually added'
+
+            return (
+              <Box key={`wages-${item.id || index}`}>
+                {isManuallyAdded && (
+                  <GridRow marginBottom={1}>
+                    <GridColumn span="12/12">
+                      <Box
+                        display="flex"
+                        justifyContent="flexEnd"
+                        marginBottom={2}
+                      >
+                        <Button
+                          variant="text"
+                          onClick={() => deleteIncomeItem(item.id)}
+                          title="Eyða tekjulið"
+                          colorScheme="destructive"
+                          size="small"
+                        >
+                          Eyða tekjulið
+                          <Box marginLeft={1} display="inlineBlock">
+                            <Icon icon="trash" size="small" />
+                          </Box>
+                        </Button>
+                      </Box>
+                    </GridColumn>
+                  </GridRow>
+                )}
+                <GridRow>
+                  <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                    <Input
+                      name={`wages-${item.id || index}-payer`}
+                      label="Heiti fyrirtækis"
+                      value={item.payer || ''}
+                      onChange={
+                        isManuallyAdded
+                          ? e => handleWageChange(item.id, e.target.value)
+                          : () => {}
+                      }
+                      type="text"
+                      backgroundColor={isManuallyAdded ? 'blue' : undefined}
+                      readOnly={!isManuallyAdded}
+                    />
+                  </GridColumn>
+                  <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                    <CurrencyInput
+                      name={`wages-${item.id}-amount`}
+                      label="Launafjárhæð"
+                      value={formatIcelandicAmount(item.amount)}
+                      onChange={value => handleIncomeChange(item.id, value)}
+                      backgroundColor="blue"
+                    />
+                  </GridColumn>
+                </GridRow>
+              </Box>
+            )
+          })}
+          <GridRow marginBottom={3}>
+            <GridColumn span={['12/12', '12/12']}>
+              <Button variant="text" size="small" onClick={addWageItem}>
+                Bæta við tekjulið
+                <Box marginLeft={1} display="inlineBlock">
+                  <Icon icon="add" size="small" />
+                </Box>
+              </Button>
+            </GridColumn>
+          </GridRow>
           <GridRow>
             <GridColumn span={['12/12', '12/12']}>
               <Input
@@ -206,6 +325,16 @@ export const Income = ({ form }: { form: FormProps }) => {
               </GridColumn>
             </GridRow>
           ))}
+          <GridRow marginBottom={3}>
+            <GridColumn span={['12/12', '12/12']}>
+              <Button variant="text" size="small">
+                Bæta við tekjulið
+                <Box marginLeft={1} display="inlineBlock">
+                  <Tooltip text="Bídd'aeins, við erum að vinna í 'essu." />
+                </Box>
+              </Button>
+            </GridColumn>
+          </GridRow>
           <GridRow>
             <GridColumn span={['12/12', '12/12']}>
               <Input
@@ -257,6 +386,16 @@ export const Income = ({ form }: { form: FormProps }) => {
               </GridColumn>
             </GridRow>
           ))}
+          <GridRow marginBottom={3}>
+            <GridColumn span={['12/12', '12/12']}>
+              <Button variant="text" size="small">
+                Bæta við tekjulið
+                <Box marginLeft={1} display="inlineBlock">
+                  <Tooltip text="Bídd'aeins, við erum að vinna í 'essu." />
+                </Box>
+              </Button>
+            </GridColumn>
+          </GridRow>
           <GridRow>
             <GridColumn span={['12/12', '12/12']}>
               <Input
