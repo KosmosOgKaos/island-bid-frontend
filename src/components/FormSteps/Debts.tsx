@@ -28,8 +28,6 @@ export const Debts = ({ form }: { form: FormProps }) => {
   // Use debts data if available, otherwise use empty array
   const debtsData = data.debts || []
 
-  console.log(debtsData)
-
   const handleDebtValueChange = (
     debt: DebtItem,
     field: keyof DebtItem,
@@ -221,7 +219,7 @@ export const Debts = ({ form }: { form: FormProps }) => {
                 </GridColumn>
               </GridRow>
               <GridRow>
-                <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+                <GridColumn span={['12/12', '12/12']}>
                   <Input
                     name="owndomicile-remaining-total"
                     label="Samtals eftirstöðvar skulda"
@@ -287,7 +285,7 @@ export const Debts = ({ form }: { form: FormProps }) => {
 
               {/* Other Debts Total Section */}
               <GridRow>
-                <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+                <GridColumn span={['12/12', '12/12']}>
                   <Input
                     name="other-debts-remaining-total"
                     label="Samtals eftirstöðvar annarra skulda"
