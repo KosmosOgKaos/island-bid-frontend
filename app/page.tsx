@@ -149,7 +149,12 @@ export default function Home() {
                           þar með talið:
                         </Text>
 
-                        <Text variant="h3" as="h3" marginTop={5} marginBottom={2}>
+                        <Text
+                          variant="h3"
+                          as="h3"
+                          marginTop={5}
+                          marginBottom={2}
+                        >
                           Vinnulaun
                         </Text>
                         <BulletList>
@@ -171,7 +176,12 @@ export default function Home() {
                           <Bullet>Laun í námsleyfi</Bullet>
                         </BulletList>
 
-                        <Text variant="h3" as="h3" marginTop={5} marginBottom={2}>
+                        <Text
+                          variant="h3"
+                          as="h3"
+                          marginTop={5}
+                          marginBottom={2}
+                        >
                           Hlunnindi
                         </Text>
                         <BulletList>
@@ -190,7 +200,12 @@ export default function Home() {
                           </Link>
                         </Box>
 
-                        <Text variant="h3" as="h3" marginTop={5} marginBottom={2}>
+                        <Text
+                          variant="h3"
+                          as="h3"
+                          marginTop={5}
+                          marginBottom={2}
+                        >
                           Skattfrjálsar tekjur
                         </Text>
                         <Text marginBottom={2}>
@@ -230,9 +245,9 @@ export default function Home() {
                           <Bullet>Hvers konar eignaréttind</Bullet>
                         </BulletList>
                         <Box marginTop={2}>
-                          <Link href="https://www.skatturinn.is/einstaklingar/tekjur-og-fradraettir/skattfrjalsar-tekjur/">
+                          <Link href="https://www.skatturinn.is/einstaklingar/framtal-og-alagning/eignir-og-skuldir/">
                             <Text color="blue400" fontWeight="semiBold">
-                              Kynntu þér skattfrjálsar tekjur á Skatturinn.is.
+                              Kynntu þér eignir og skuldir á Skatturinn.is.
                             </Text>
                           </Link>
                         </Box>
@@ -259,9 +274,9 @@ export default function Home() {
                           eða ársyfirlitum lánastofnana.
                         </Text>
                         <Box marginTop={2}>
-                          <Link href="https://www.skatturinn.is/einstaklingar/tekjur-og-fradraettir/skattfrjalsar-tekjur/">
+                          <Link href="https://www.skatturinn.is/einstaklingar/framtal-og-alagning/eignir-og-skuldir/">
                             <Text color="blue400" fontWeight="semiBold">
-                              Kynntu þér skattfrjálsar tekjur á Skatturinn.is.
+                              Kynntu þér eignir og skuldir á Skatturinn.is.
                             </Text>
                           </Link>
                         </Box>
