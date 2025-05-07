@@ -27,7 +27,7 @@ export default function LoginPage() {
   const { setSsn } = useSsn()
 
   const handleLogin = async () => {
-    try {      
+    try {
       setLoginError(false)
       const result = await loginMutation({
         variables: {
@@ -127,7 +127,9 @@ export default function LoginPage() {
                         </Box>
                         {loginError && (
                           <Box marginTop={2}>
-                            <ErrorMessage >Ekki tókst að auðkenna</ErrorMessage>
+                            <ErrorMessage dataTestId="authentication-failure-text">
+                              Ekki tókst að auðkenna
+                            </ErrorMessage>
                           </Box>
                         )}
 

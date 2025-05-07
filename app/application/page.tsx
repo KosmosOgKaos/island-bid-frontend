@@ -197,6 +197,7 @@ export default function ApplicationPage() {
           <AlertMessage
             type="error"
             title=""
+            testid="validationErrorMessage"
             message={validationError}
           />
         )}
