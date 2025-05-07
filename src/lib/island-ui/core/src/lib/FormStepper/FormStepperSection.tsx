@@ -98,7 +98,11 @@ export const FormStepperSection: FC<
             [styles.nameWithActiveSubSections]: hasSubSections && isActive,
           })}
         >
-          <Text lineHeight="lg" fontWeight={isActive ? 'semiBold' : 'light'}>
+          <Text
+            lineHeight="lg"
+            fontWeight={isActive ? 'semiBold' : 'light'}
+            dataTestId={isActive ? 'active-section-name' : 'section-name'}
+          >
             {section.name}
           </Text>
         </Box>
