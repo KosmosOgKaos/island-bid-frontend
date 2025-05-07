@@ -18,25 +18,6 @@ interface UseTaxDataReturnType {
   fetchError: string | null
 }
 
-const mapTaxData = (
-  taxReturnInfo: NonNullable<
-    GetLatestTaxReturnInfoQuery['getLatestTaxReturnInfo']
-  >
-) => {
-  // Debts and incomes have no ids so we assign them their index id here
-  return {
-    ...taxReturnInfo,
-    debts: (taxReturnInfo.debts ?? []).map((debt, index) => ({
-      ...debt,
-      id: index,
-    })),
-    incomes: (taxReturnInfo.incomes ?? []).map((income, index) => ({
-      ...income,
-      id: index,
-    })),
-  }
-}
-
 export const useTaxData = ({
   onChange,
 }: UseTaxDataProps): UseTaxDataReturnType => {
@@ -53,15 +34,17 @@ export const useTaxData = ({
         if (response && response.getLatestTaxReturnInfo) {
           let taxData = response.getLatestTaxReturnInfo
           const storedTaxData = localStorage.getItem('taxData')
-          const parsedStoredTaxData = storedTaxData ? JSON.parse(storedTaxData) : null
-          
+          const parsedStoredTaxData = storedTaxData
+            ? JSON.parse(storedTaxData)
+            : null
+
           // Merge stored data with new data if available
           if (parsedStoredTaxData) {
             // Merge person data if it exists in stored data
             if (parsedStoredTaxData.person) {
               taxData = {
                 ...taxData,
-                person: parsedStoredTaxData.person
+                person: parsedStoredTaxData.person,
               }
             }
 
@@ -89,8 +72,8 @@ export const useTaxData = ({
               return storedProperty || property
             })
           }
-          
-          localStorage.setItem('taxData', JSON.stringify(mapTaxData(taxData)))
+
+          localStorage.setItem('taxData', JSON.stringify(taxData))
 
           onChange({
             target: {
