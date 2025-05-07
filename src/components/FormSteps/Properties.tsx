@@ -87,7 +87,6 @@ export const Properties = ({ form }: { form: FormProps }) => {
     (total, property) => total + property.value,
     0
   )
-  console.log("properties", propertiesData)
   return (
     <Box>
       <Text variant="h2" as="h2" marginBottom={2}>

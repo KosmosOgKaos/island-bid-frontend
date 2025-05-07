@@ -206,18 +206,12 @@ export default function ApplicationPage() {
         }))
       }
 
-      const result = await createSubmission({
+      await createSubmission({
         variables: {
           ssn,
           input: transformedData
         },
       })
-
-      if (result.data?.createSubmission) {
-        console.log("SUBMITTED YEEEEAAH")
-      } else {
-        console.log("OH NO OH FUCK")
-      }
     } catch (error) {
       console.error('Error submitting tax data:', error)
     }
