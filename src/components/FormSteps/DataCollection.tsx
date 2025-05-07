@@ -1,47 +1,40 @@
-import React, { useEffect } from 'react'
-import { Box, Checkbox, Icon, Text } from '@island.is/island-ui/core'
+import React from 'react'
+import { Box, Text, Checkbox, Icon } from '@island.is/island-ui/core'
 import { useTaxData } from '@/hooks/useTaxData'
 
 interface FormProps {
   data: {
     consent?: boolean
-    consentChanged?: boolean
     [key: string]: unknown
   }
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void
 }
 
 export const DataCollection = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
-  const { fetchTaxData, isLoading, isDataFetched } = useTaxData({
+  const { fetchTaxData } = useTaxData({
     onChange,
   })
 
-  // Called when the Continue button is clicked from the parent
-  useEffect(() => {
-    if (
-      data.consentChanged === true &&
-      data.consent === true &&
-      !isLoading &&
-      !isDataFetched
-    ) {
-      fetchTaxData()
-    }
-  }, [
-    data.consentChanged,
-    data.consent,
-    isLoading,
-    isDataFetched,
-    fetchTaxData,
-  ])
+  const handleConsentChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { checked } = e.target
 
-  const handleConsentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // Update consent state
     onChange({
       target: {
         name: 'consent',
-        value: event.target.checked,
+        value: checked,
       },
     } as unknown as React.ChangeEvent<HTMLInputElement>)
+
+    // Fetch tax data if consent is given
+    if (checked) {
+      fetchTaxData()
+    }
   }
 
   return (
@@ -76,12 +69,12 @@ export const DataCollection = ({ form }: { form: FormProps }) => {
       <Box marginBottom={7} marginTop={4}>
         <Checkbox
           name="consent"
+          id="consent"
           label="Ég samþykki að gögn verði sótt rafrænt"
-          checked={!!data.consent}
+          checked={data.consent || false}
           backgroundColor="blue"
+
           onChange={handleConsentChange}
-          hasError={false}
-          errorMessage=""
           large
         />
       </Box>

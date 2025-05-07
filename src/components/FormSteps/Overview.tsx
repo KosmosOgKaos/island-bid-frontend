@@ -7,11 +7,13 @@ import {
   Stack,
   Tag,
   Divider,
+  Button,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
-import { DebtItem } from '@/constants/debtsData'
-import { PropertyItem } from '@/constants/propertiesData'
-import { IncomeItem } from '@/constants/incomeData'
+import { DebtItem } from '@/lib/types'
+import { PropertyItem } from '@/lib/types'
+import { IncomeItem } from '@/lib/types'
+import { useRouter } from 'next/navigation'
 
 interface FormProps {
   data: {
@@ -36,18 +38,38 @@ interface FormProps {
 // Component wrapper to handle different prop structures
 export const Overview = ({ form }: { form: FormProps }) => {
   const { data } = form
-  
+  const router = useRouter()
+
   // Get the income data with fallback to either property name
   const incomeData = (data?.incomes || data?.income || []) as IncomeItem[]
 
   // Helper function to create section titles
-  const SectionTitle = ({ title, number }: { title: string; number: string }) => (
+  const SectionTitle = ({
+    title,
+    number,
+    stepId,
+  }: {
+    title: string
+    number: string
+    stepId: string
+  }) => (
     <Box marginBottom={2}>
-      <Box display="flex" alignItems="center">
-        <Box marginRight={1}>
-          <Text variant="h3">{title}</Text>
+      <Box display="flex" justifyContent="spaceBetween" alignItems="center">
+        <Box display="flex" alignItems="center">
+          <Box marginRight={1}>
+            <Text variant="h3">{title}</Text>
+          </Box>
+          <Tag variant="blue">{number}</Tag>
         </Box>
-        <Tag variant="blue">{number}</Tag>
+        <Box>
+          <Button 
+            variant="text" 
+            size="small"
+            onClick={() => router.push(`/application?step=${stepId}`)}
+          >
+            Breyta
+          </Button>
+        </Box>
       </Box>
     </Box>
   )
@@ -72,35 +94,33 @@ export const Overview = ({ form }: { form: FormProps }) => {
         Yfirlit
       </Text>
       <Text marginBottom={5}>
-        Vinsamlegast farðu yfir upplýsingarnar hér að neðan áður en þú
-        skilar inn framtalið.
+        Vinsamlegast farðu yfir upplýsingarnar hér að neðan áður en þú skilar
+        inn framtalið.
       </Text>
 
-      <Stack space={5}>
+      <Stack space={3}>
         {/* Data Collection */}
         <Box border="standard" padding={4} borderRadius="large">
-          <SectionTitle title="Gagnaöflun" number="1" />
-          <Text>
-            Sjálfvirk gagnaöflun var samþykkt.
-          </Text>
+          <SectionTitle title="Gagnaöflun" number="1" stepId="dataCollection" />
+          <Text>Sjálfvirk gagnaöflun var samþykkt.</Text>
         </Box>
 
         {/* Personal Information */}
         <Box border="standard" padding={4} borderRadius="large">
-          <SectionTitle title="Persónuupplýsingar" number="2" />
+          <SectionTitle title="Persónuupplýsingar" number="2" stepId="information" />
           <GridRow>
-            <GridColumn span={['12/12', '6/12']} paddingBottom={2}>
+            <GridColumn span={['12/12', '6/12']}>
               <FieldItem label="Nafn" value={data?.person?.name} />
             </GridColumn>
-            <GridColumn span={['12/12', '6/12']} paddingBottom={2}>
+            <GridColumn span={['12/12', '6/12']}>
               <FieldItem label="Kennitala" value={data?.person?.kennitala} />
             </GridColumn>
           </GridRow>
           <GridRow>
-            <GridColumn span={['12/12', '6/12']} paddingBottom={2}>
+            <GridColumn span={['12/12', '6/12']}>
               <FieldItem label="Netfang" value={data?.person?.email} />
             </GridColumn>
-            <GridColumn span={['12/12', '6/12']} paddingBottom={2}>
+            <GridColumn span={['12/12', '6/12']}>
               <FieldItem label="Símanúmer" value={data?.person?.telephone} />
             </GridColumn>
           </GridRow>
@@ -113,17 +133,18 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
         {/* Income */}
         <Box border="standard" padding={4} borderRadius="large">
-          <SectionTitle title="Tekjur" number="3" />
+          <SectionTitle title="Tekjur" number="3" stepId="income" />
 
           {incomeData.length > 0 ? (
             <>
               {/* Wages */}
-              {incomeData.filter(item => item.type === 'Wages').length >
-                0 && (
+              {incomeData.filter(item => item.type === 'Wages').length > 0 && (
                 <Box marginBottom={4}>
                   <Box display="flex" alignItems="center" marginBottom={2}>
                     <Box marginRight={1}>
-                      <Text variant="h4">Launatekjur og starfstengdar greiðslur</Text>
+                      <Text variant="h4">
+                        Launatekjur og starfstengdar greiðslur
+                      </Text>
                     </Box>
                     <Tag variant="blue">3.1</Tag>
                   </Box>
@@ -157,14 +178,20 @@ export const Overview = ({ form }: { form: FormProps }) => {
                       </Box>
                     ))}
 
-                  <Box
-                    background="white"
-                    borderRadius="standard"
-                    marginTop={2}
-                  >
-                    <Box display="flex" justifyContent="spaceBetween" alignItems="center">
-                      <Text fontWeight="semiBold">Samtals launatekjur og starfstengdar greiðslur</Text>
-                      <Text fontWeight="semiBold" color="blue600" textAlign="right">
+                  <Box background="white" borderRadius="standard" marginTop={2}>
+                    <Box
+                      display="flex"
+                      justifyContent="spaceBetween"
+                      alignItems="center"
+                    >
+                      <Text fontWeight="semiBold">
+                        Samtals launatekjur og starfstengdar greiðslur
+                      </Text>
+                      <Text
+                        fontWeight="semiBold"
+                        color="blue600"
+                        textAlign="right"
+                      >
                         {formatIcelandicAmount(
                           incomeData
                             .filter(item => item.type === 'Wages')
@@ -178,12 +205,13 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
               {/* Add divider between Wages and Benefits */}
               {incomeData.filter(item => item.type === 'Wages').length > 0 &&
-                incomeData.filter(item => item.type === 'Benefits').length > 0 && (
+                incomeData.filter(item => item.type === 'Benefits').length >
+                  0 && (
                   <Box marginTop={3} marginBottom={8}>
                     <Divider />
                   </Box>
                 )}
-              
+
               {/* Benefits */}
               {incomeData.filter(item => item.type === 'Benefits').length >
                 0 && (
@@ -233,16 +261,20 @@ export const Overview = ({ form }: { form: FormProps }) => {
                       </Box>
                     ))}
 
-                  <Box
-                    background="white"
-                    borderRadius="standard"
-                    marginTop={2}
-                  >
-                    <Box display="flex" justifyContent="spaceBetween" alignItems="center">
+                  <Box background="white" borderRadius="standard" marginTop={2}>
+                    <Box
+                      display="flex"
+                      justifyContent="spaceBetween"
+                      alignItems="center"
+                    >
                       <Text fontWeight="semiBold">
                         Samtals dagpeningar og hlunnindi
                       </Text>
-                      <Text fontWeight="semiBold" color="blue600" textAlign="right">
+                      <Text
+                        fontWeight="semiBold"
+                        color="blue600"
+                        textAlign="right"
+                      >
                         {formatIcelandicAmount(
                           incomeData
                             .filter(item => item.type === 'Benefits')
@@ -261,7 +293,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                     <Divider />
                   </Box>
                 )}
-              
+
               {/* Other Income */}
               {incomeData.filter(item => item.type === 'Other').length > 0 && (
                 <Box>
@@ -321,14 +353,18 @@ export const Overview = ({ form }: { form: FormProps }) => {
                       </Box>
                     ))}
 
-                  <Box
-                    background="white"
-                    borderRadius="standard"
-                    marginTop={2}
-                  >
-                    <Box display="flex" justifyContent="spaceBetween" alignItems="center">
+                  <Box background="white" borderRadius="standard" marginTop={2}>
+                    <Box
+                      display="flex"
+                      justifyContent="spaceBetween"
+                      alignItems="center"
+                    >
                       <Text fontWeight="semiBold">Samtals aðrar tekjur</Text>
-                      <Text fontWeight="semiBold" color="blue600" textAlign="right">
+                      <Text
+                        fontWeight="semiBold"
+                        color="blue600"
+                        textAlign="right"
+                      >
                         {formatIcelandicAmount(
                           incomeData
                             .filter(item => item.type === 'Other')
@@ -341,12 +377,12 @@ export const Overview = ({ form }: { form: FormProps }) => {
               )}
 
               {/* Total Income */}
-              <Box
-                background="white"
-                borderRadius="standard"
-                marginTop={4}
-              >
-                <Box display="flex" justifyContent="spaceBetween" alignItems="center">
+              <Box background="white" borderRadius="standard" marginTop={4}>
+                <Box
+                  display="flex"
+                  justifyContent="spaceBetween"
+                  alignItems="center"
+                >
                   <Text fontWeight="semiBold">Heildartekjur</Text>
                   <Text fontWeight="semiBold" color="blue600" textAlign="right">
                     {formatIcelandicAmount(
@@ -363,7 +399,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
         {/* Properties */}
         <Box border="standard" padding={4} borderRadius="large">
-          <SectionTitle title="Eignir" number="4" />
+          <SectionTitle title="Eignir" number="4" stepId="properties" />
 
           {data?.properties && data.properties.length > 0 ? (
             data.properties.map((property, index) => (
@@ -375,7 +411,15 @@ export const Overview = ({ form }: { form: FormProps }) => {
                   marginBottom={2}
                 >
                   <Text variant="h4" marginBottom={2}>
-                    {property.type === 'DomesticProperty' ? 'Íbúðarhúsnæði' : property.type === 'Vehicle' ? 'Ökutæki' : 'Önnur fasteign'} - {property.properties.address || property.properties.registrationNumber || `Eign ${index + 1}`}
+                    {property.type === 'DomesticProperty'
+                      ? 'Íbúðarhúsnæði'
+                      : property.type === 'Vehicle'
+                      ? 'Ökutæki'
+                      : 'Önnur fasteign'}{' '}
+                    -{' '}
+                    {property.properties.address ||
+                      property.properties.registrationNumber ||
+                      `Eign ${index + 1}`}
                   </Text>
 
                   <GridRow>
@@ -393,7 +437,11 @@ export const Overview = ({ form }: { form: FormProps }) => {
                     </GridColumn>
                     <GridColumn span={['12/12', '6/12']} paddingBottom={2}>
                       <FieldItem
-                        label={property.type === 'DomesticProperty' ? 'Kaupár' : 'Árgerð'}
+                        label={
+                          property.type === 'DomesticProperty'
+                            ? 'Kaupár'
+                            : 'Árgerð'
+                        }
                         value={property.properties.yearOfPurchase}
                       />
                     </GridColumn>
@@ -402,7 +450,11 @@ export const Overview = ({ form }: { form: FormProps }) => {
                   <GridRow>
                     <GridColumn span="6/12" paddingBottom={2}>
                       <FieldItem
-                        label={property.type === 'DomesticProperty' ? 'Fasteignamat' : 'Kaupverð'}
+                        label={
+                          property.type === 'DomesticProperty'
+                            ? 'Fasteignamat'
+                            : 'Kaupverð'
+                        }
                         value={formatIcelandicAmount(property.value)}
                       />
                     </GridColumn>
@@ -429,12 +481,12 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
           {/* Properties Summary */}
           {data?.properties && data.properties.length > 0 && (
-            <Box
-              background="white"
-              borderRadius="standard"
-              marginTop={3}
-            >
-              <Box display="flex" justifyContent="spaceBetween" alignItems="center">
+            <Box background="white" borderRadius="standard" marginTop={3}>
+              <Box
+                display="flex"
+                justifyContent="spaceBetween"
+                alignItems="center"
+              >
                 <Text fontWeight="semiBold">Heildarfasteignamat</Text>
                 <Text fontWeight="semiBold" color="blue600" textAlign="right">
                   {formatIcelandicAmount(
@@ -451,7 +503,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
 
         {/* Debts */}
         <Box border="standard" padding={4} borderRadius="large">
-          <SectionTitle title="Skuldir og vaxtagjöld" number="5" />
+          <SectionTitle title="Skuldir og vaxtagjöld" number="5" stepId="debts" />
 
           {data?.debts && data.debts.length > 0 ? (
             <>
@@ -515,16 +567,20 @@ export const Overview = ({ form }: { form: FormProps }) => {
                       </Box>
                     ))}
 
-                  <Box
-                    background="white"
-                    borderRadius="standard"
-                    marginTop={2}
-                  >
-                    <Box display="flex" justifyContent="spaceBetween" alignItems="center">
+                  <Box background="white" borderRadius="standard" marginTop={2}>
+                    <Box
+                      display="flex"
+                      justifyContent="spaceBetween"
+                      alignItems="center"
+                    >
                       <Text fontWeight="semiBold">
                         Samtals eftirstöðvar íbúðarlána
                       </Text>
-                      <Text fontWeight="semiBold" color="blue600" textAlign="right">
+                      <Text
+                        fontWeight="semiBold"
+                        color="blue600"
+                        textAlign="right"
+                      >
                         {formatIcelandicAmount(
                           data.debts
                             .filter(debt => debt.type === 'OwnDomicile')
@@ -535,15 +591,17 @@ export const Overview = ({ form }: { form: FormProps }) => {
                   </Box>
                 </Box>
               )}
-              
+
               {/* Add divider between Housing Loans and Other Debts */}
-              {data?.debts?.filter(debt => debt.type === 'OwnDomicile').length > 0 &&
-                data?.debts?.filter(debt => debt.type === 'Other').length > 0 && (
+              {data?.debts?.filter(debt => debt.type === 'OwnDomicile').length >
+                0 &&
+                data?.debts?.filter(debt => debt.type === 'Other').length >
+                  0 && (
                   <Box marginTop={3} marginBottom={6}>
                     <Divider />
                   </Box>
                 )}
-              
+
               {/* Other Debts */}
               {data?.debts?.filter(debt => debt.type === 'Other').length >
                 0 && (
@@ -595,16 +653,20 @@ export const Overview = ({ form }: { form: FormProps }) => {
                       </Box>
                     ))}
 
-                  <Box
-                    background="white"
-                    borderRadius="standard"
-                    marginTop={2}
-                  >
-                    <Box display="flex" justifyContent="spaceBetween" alignItems="center">
+                  <Box background="white" borderRadius="standard" marginTop={2}>
+                    <Box
+                      display="flex"
+                      justifyContent="spaceBetween"
+                      alignItems="center"
+                    >
                       <Text fontWeight="semiBold">
                         Samtals eftirstöðvar annarra skulda
                       </Text>
-                      <Text fontWeight="semiBold" color="blue600" textAlign="right">
+                      <Text
+                        fontWeight="semiBold"
+                        color="blue600"
+                        textAlign="right"
+                      >
                         {formatIcelandicAmount(
                           data?.debts
                             ?.filter(debt => debt.type === 'Other')
@@ -617,16 +679,19 @@ export const Overview = ({ form }: { form: FormProps }) => {
               )}
 
               {/* Grand Total Debts */}
-              <Box
-                background="white"
-                borderRadius="standard"
-                marginTop={4}
-              >
-                <Box display="flex" justifyContent="spaceBetween" alignItems="center">
+              <Box background="white" borderRadius="standard" marginTop={4}>
+                <Box
+                  display="flex"
+                  justifyContent="spaceBetween"
+                  alignItems="center"
+                >
                   <Text fontWeight="semiBold">Samanlagðar heildarskuldir</Text>
                   <Text fontWeight="semiBold" color="blue600" textAlign="right">
                     {formatIcelandicAmount(
-                      data?.debts?.reduce((sum, debt) => sum + debt.remaining, 0)
+                      data?.debts?.reduce(
+                        (sum, debt) => sum + debt.remaining,
+                        0
+                      )
                     )}
                   </Text>
                 </Box>

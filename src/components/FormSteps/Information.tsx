@@ -1,13 +1,12 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import {
   Box,
   GridColumn,
   GridRow,
   Input,
-  Tag,
   Text,
 } from '@island.is/island-ui/core'
-import { Person, defaultPersonData } from '@/constants/personData'
+import { Person } from '@/lib/types'
 
 interface FormProps {
   data: {
@@ -22,23 +21,14 @@ interface FormProps {
 export const Information = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
 
-  // Use person data if available, otherwise use defaults
-  const person = data.person || defaultPersonData
+  const person = data.person || {
+    name: '',
+    kennitala: '',
+    address: '',
+    email: '',
+    telephone: '',
+  }
 
-  // Initialize person data if it doesn't exist in the form
-  useEffect(() => {
-    if (!data.person) {
-      console.log('Initializing person data in form')
-      onChange({
-        target: {
-          name: 'person',
-          value: defaultPersonData,
-        },
-      } as unknown as React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>)
-    }
-  }, [data.person, onChange])
-
-  // Split the address for display
   const addressParts = person.address?.split(',').map(part => part.trim()) || [
     '',
     '',
@@ -90,11 +80,8 @@ export const Information = ({ form }: { form: FormProps }) => {
 
   return (
     <Box>
-      <Box display="flex">
-        <Box marginRight={1}>
-          <Text variant="h3">Persónuupplýsingar</Text>
-        </Box>
-        <Tag>2.1</Tag>
+      <Box marginRight={1} marginBottom={2}>
+        <Text variant="h2">Persónuupplýsingar</Text>
       </Box>
       <Text marginBottom={5}>
         Vinsamlegast staðfestu persónuupplýsingarnar þínar.
@@ -103,8 +90,8 @@ export const Information = ({ form }: { form: FormProps }) => {
       <GridRow>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
           <Input
-            name="name"
             label="Nafn"
+            name="name"
             value={person.name}
             onChange={handleChange}
             readOnly
@@ -112,20 +99,16 @@ export const Information = ({ form }: { form: FormProps }) => {
         </GridColumn>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
           <Input
-            name="kennitala"
             label="Kennitala"
+            name="kennitala"
             value={person.kennitala}
-            onChange={handleChange}
             readOnly
           />
         </GridColumn>
-      </GridRow>
-
-      <GridRow>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
           <Input
-            name="streetAddress"
             label="Heimilisfang"
+            name="streetAddress"
             value={streetAddress}
             onChange={handleChange}
             readOnly
@@ -133,33 +116,28 @@ export const Information = ({ form }: { form: FormProps }) => {
         </GridColumn>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
           <Input
+            label="Póstnúmer og staður"
             name="location"
-            label="Staðsetning"
             value={location}
             onChange={handleChange}
             readOnly
           />
         </GridColumn>
-      </GridRow>
-
-      <GridRow>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
           <Input
-            name="email"
             label="Netfang"
+            name="email"
             value={person.email}
             onChange={handleChange}
-            type="email"
             backgroundColor="blue"
           />
         </GridColumn>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
           <Input
-            name="telephone"
             label="Símanúmer"
+            name="telephone"
             value={person.telephone}
             onChange={handleChange}
-            type="tel"
             backgroundColor="blue"
           />
         </GridColumn>

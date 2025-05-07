@@ -9,7 +9,7 @@ import {
   Text,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
-import { IncomeItem } from '@/constants/incomeData'
+import { IncomeItem } from '@/lib/types'
 import { CurrencyInput } from '../CurrencyInput'
 
 interface FormProps {
@@ -33,10 +33,10 @@ export const Income = ({ form }: { form: FormProps }) => {
 
     try {
       const storedIncomeData = localStorage.getItem('incomeData')
-      
+
       if (storedIncomeData) {
         const incomeData = JSON.parse(storedIncomeData)
-        
+
         if (Array.isArray(incomeData) && !data.incomes) {
           const event = {
             target: {
@@ -105,9 +105,9 @@ export const Income = ({ form }: { form: FormProps }) => {
 
   return (
     <Box>
-      <Text variant="h2" marginBottom={2}>
-        Tekjur ársins 2024
-      </Text>
+      <Box marginRight={1} marginBottom={2}>
+        <Text variant="h2">Tekjur ársins 2024</Text>
+      </Box>
       <Text marginBottom={5}>
         Vinsamlegast fylltu út tekjurnar þínar. Lorem ipsum dolor sit amet
         consectetur adipisicing elit. Cumque optio necessitatibus omnis.
