@@ -134,7 +134,7 @@ export default function Home() {
                           </Text>
                         </Box>
                         <Link href="/login" skipTab>
-                          <Button icon="open" iconType="outline" nowrap>
+                          <Button icon="open" iconType="outline" nowrap dataTestId='application-apply-button'>
                             Hefja skattframtal
                           </Button>
                         </Link>

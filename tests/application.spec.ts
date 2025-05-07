@@ -15,7 +15,7 @@ test('Login works', async ({ page }) => {
   await applyButton.click()
 
   const authenticationInput = page.getByPlaceholder('000-0000')
-  authenticationInput.fill('8221429')
+  authenticationInput.fill('7728391')
 
   const authenticationButton = page.getByTestId('authentication-login-button')
   await expect(authenticationButton).toHaveText('Auðkenna')
