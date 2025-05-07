@@ -44,7 +44,7 @@ export const formSteps = [
   {
     id: 'overview',
     title: 'Yfirlit',
-    prev: 'assets',
+    prev: 'debts',
     next: 'done',
     component: Overview,
   },
