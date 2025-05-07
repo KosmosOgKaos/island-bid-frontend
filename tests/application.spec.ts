@@ -11,11 +11,11 @@ test('Login works', async ({ page }) => {
   await page.goto('/')
 
   const applyButton = page.getByTestId('application-apply-button')
-  await expect(applyButton).toHaveText('Sækja um')
+  await expect(applyButton).toHaveText('Hefja skattframtal')
   await applyButton.click()
 
   const authenticationInput = page.getByPlaceholder('000-0000')
-  authenticationInput.fill('8221429')
+  authenticationInput.fill('7728391')
 
   const authenticationButton = page.getByTestId('authentication-login-button')
   await expect(authenticationButton).toHaveText('Auðkenna')

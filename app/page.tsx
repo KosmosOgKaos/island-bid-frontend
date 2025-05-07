@@ -146,7 +146,13 @@ export default function Home() {
                             Skila skattframtali fyrir 2024
                           </Text>
                         </Box>
-                        <Button icon="open" iconType="outline" nowrap onClick={handleStartApplication}>
+                        <Button
+                          icon="open"
+                          iconType="outline"
+                          nowrap
+                          onClick={handleStartApplication}
+                          dataTestId="application-apply-button"
+                        >
                           Hefja skattframtal
                         </Button>
                       </Box>
