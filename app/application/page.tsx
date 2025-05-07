@@ -218,34 +218,24 @@ export default function ApplicationPage() {
           <Box display="flex">
             {currentStep.next && (
               <Box display="flex">
-                <Hidden below="sm">
-                  <Box marginRight={2}>
-                    <Button
-                      onClick={saveApplication}
-                      variant="ghost"
-                      icon="save"
-                      iconType="outline"
-                    >
-                      Vista
-                    </Button>
-                  </Box>
-                </Hidden>
+                {currentStep.prev && (
+                  <Hidden below="sm">
+                    <Box marginRight={2}>
+                      <Button
+                        onClick={saveApplication}
+                        variant="ghost"
+                        icon="save"
+                        iconType="outline"
+                      >
+                        Vista
+                      </Button>
+                    </Box>
+                  </Hidden>
+                )}
                 <Button onClick={goToNextStep} icon="arrowForward">
-                  Halda áfram
+                  {currentStep.id === 'overview' ? 'Skila skattframtali' : 'Halda áfram'}
                 </Button>
               </Box>
-            )}
-            {!currentStep.next && (
-              <Hidden below="sm">
-                <Button
-                  onClick={saveApplication}
-                  variant="ghost"
-                  icon="save"
-                  iconType="outline"
-                >
-                  Vista
-                </Button>
-              </Hidden>
             )}
           </Box>
         </Box>
