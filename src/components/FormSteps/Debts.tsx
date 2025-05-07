@@ -1,16 +1,16 @@
-import React, { useEffect, useMemo } from 'react'
+import React from 'react'
 import {
   Box,
   GridColumn,
   GridRow,
   Input,
+  Text,
   Stack,
   Tag,
-  Text,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
 import { CurrencyInput } from '@/components/CurrencyInput'
-import { DebtItem, defaultDebtsData } from '@/constants/debtsData'
+import { DebtItem } from '@/lib/types'
 
 interface FormProps {
   data: {
@@ -25,18 +25,8 @@ interface FormProps {
 export const Debts = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
 
-  useEffect(() => {
-    if (!data.debts) {
-      onChange({
-        target: {
-          name: 'debts',
-          value: defaultDebtsData,
-        },
-      } as unknown as React.ChangeEvent<HTMLInputElement>)
-    }
-  }, [data.debts, onChange])
-
-  const debtsData = useMemo(() => data.debts || [], [data.debts])
+  // Use debts data if available, otherwise use empty array
+  const debtsData = data.debts || []
 
   const handleDebtValueChange = (
     debt: DebtItem,
@@ -46,17 +36,13 @@ export const Debts = ({ form }: { form: FormProps }) => {
     const index = debtsData.findIndex(d => d === debt)
     if (index === -1) return
 
-    const numericValue = parseFloat(value.replace(/\./g, '').replace('kr.', ''))
+    const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'))
+    const updatedDebts = [...debtsData]
 
-    const updatedDebts = debtsData.map((d, i) => {
-      if (i === index) {
-        return {
-          ...d,
-          [field]: isNaN(numericValue) ? 0 : numericValue,
-        }
-      }
-      return d
-    })
+    updatedDebts[index] = {
+      ...updatedDebts[index],
+      [field]: isNaN(numericValue) ? 0 : numericValue,
+    }
 
     onChange({
       target: {
@@ -66,306 +52,273 @@ export const Debts = ({ form }: { form: FormProps }) => {
     } as unknown as React.ChangeEvent<HTMLInputElement>)
   }
 
-  const groupedDebts = useMemo(() => {
-    const grouped = {
-      OwnDomicile: [] as DebtItem[],
-      Other: [] as DebtItem[],
-    }
+  // Calculate totals for debts
+  const ownDomicileDebts = debtsData.filter(debt => debt.type === 'OwnDomicile')
+  const otherDebts = debtsData.filter(debt => debt.type !== 'OwnDomicile')
 
-    debtsData.forEach(debt => {
-      if (debt.type === 'OwnDomicile') {
-        grouped.OwnDomicile.push(debt)
-      } else if (debt.type === 'Other') {
-        grouped.Other.push(debt)
-      }
-    })
-
-    return grouped
-  }, [debtsData])
-
-  const totals = useMemo(() => {
-    const ownDomicileRemainingTotal = groupedDebts.OwnDomicile.reduce(
-      (sum, debt) => sum + debt.remaining,
-      0
-    )
-
-    const otherRemainingTotal = groupedDebts.Other.reduce(
-      (sum, debt) => sum + debt.remaining,
-      0
-    )
-
-    const interestTotal = debtsData.reduce(
-      (sum, debt) => sum + debt.interestPaymentTotal,
-      0
-    )
-
-    const remainingTotal = ownDomicileRemainingTotal + otherRemainingTotal
-
-    return {
-      ownDomicileRemainingTotal,
-      otherRemainingTotal,
-      interestTotal,
-      remainingTotal,
-    }
-  }, [groupedDebts, debtsData])
-
-  // Helper component for section headers
-  const SectionHeader = ({
-    title,
-    tagNumber,
-  }: {
-    title: string
-    tagNumber: string
-  }) => (
-    <>
-      <Box display="flex">
-        <Box marginRight={1}>
-          <Text variant="h3">{title}</Text>
-        </Box>
-        <Tag>{tagNumber}</Tag>
-      </Box>
-      <Text marginBottom={3}>
-        {tagNumber === '5.1'
-          ? 'Lán sem tengjast eigin íbúð.'
-          : 'Yfirlit yfir aðrar skuldir.'}
-      </Text>
-    </>
+  const totalOwnDomicileRemaining = ownDomicileDebts.reduce(
+    (total, debt) => total + debt.remaining,
+    0
   )
 
-  const ReadOnlyField = ({
-    name,
-    label,
-    value,
-  }: {
-    name: string
-    label: string
-    value: string
-  }) => <Input name={name} label={label} value={value} type="text" readOnly />
-
-  const EditableCurrencyField = ({
-    name,
-    label,
-    value,
-    onChange,
-  }: {
-    name: string
-    label: string
-    value: number
-    onChange: (value: string) => void
-  }) => (
-    <CurrencyInput
-      name={name}
-      label={label}
-      value={formatIcelandicAmount(value)}
-      onChange={onChange}
-      backgroundColor="blue"
-    />
+  const totalOtherDebtsRemaining = otherDebts.reduce(
+    (total, debt) => total + debt.remaining,
+    0
   )
 
-  const TotalSection = ({
-    name,
-    label,
-    value,
-  }: {
-    name: string
-    label: string
-    value: number
-  }) => (
-    <Box>
-      <GridRow>
-        <GridColumn span="12/12">
-          <ReadOnlyField
-            name={name}
-            label={label}
-            value={formatIcelandicAmount(value)}
-          />
-        </GridColumn>
-      </GridRow>
-    </Box>
+  // Calculate the total remaining debt amount for all debts
+  const totalRemainingDebt = debtsData.reduce(
+    (total, debt) => total + debt.remaining,
+    0
   )
 
   return (
     <Box>
-      <Text variant="h2" marginBottom={2}>
-        Skuldir og vaxtagjöld 2024
-      </Text>
+      <Box marginRight={1} marginBottom={2}>
+        <Text variant="h2">Skuldir og vaxtagjöld 2024</Text>
+      </Box>
       <Text marginBottom={5}>
-        Vinsamlegast fylltu út skuldir þínar. Lorem ipsum dolor sit amet
+        Vinsamlegast fylltu út skuldir og vaxtagjöld. Lorem ipsum dolor sit amet
         consectetur adipisicing elit. Cumque optio necessitatibus omnis.
       </Text>
-      <Stack space={7}>
-        <Box>
-          <SectionHeader title="Íbúðalán" tagNumber="5.1" />
 
-          {groupedDebts.OwnDomicile.map((debt, index) => (
-            <Box key={`own-domicile-${index}`}>
+      {debtsData.length === 0 ? (
+        <Text>Engar skuldir fundust.</Text>
+      ) : (
+        <Stack space={7}>
+          {/* OwnDomicile Debts Section */}
+          {ownDomicileDebts.map((debt, index) => (
+            <Box key={`owndomicile-${index}`}>
+              <Box display="flex">
+                <Box marginRight={1}>
+                  <Text variant="h3" marginBottom={2}>
+                    5.1 Vaxtagjöld vegna íbúðarhúsnæðis til eigin nota
+                  </Text>
+                </Box>
+                <Tag>5.1</Tag>
+              </Box>
               <GridRow>
+                {debt.properties?.yearOfPurchase && (
+                  <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                    <Input
+                      label="Kaupár"
+                      name="yearOfPurchase"
+                      value={debt.properties.yearOfPurchase}
+                      readOnly
+                    />
+                  </GridColumn>
+                )}
+                {debt.properties?.domicileLocation && (
+                  <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                    <Input
+                      label="Staðsetning íbúðarhúsnæðis"
+                      name="domicileLocation"
+                      value={debt.properties.domicileLocation}
+                      readOnly
+                    />
+                  </GridColumn>
+                )}
+
                 <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <ReadOnlyField
-                    name={`own-domicile-${index}-creditor`}
-                    label="Nafn lánastofnunar"
+                  <Input
+                    label="Lánveitandi"
+                    name="creditor"
                     value={debt.creditor || ''}
+                    readOnly
                   />
                 </GridColumn>
+
                 <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <ReadOnlyField
-                    name={`own-domicile-${index}-creditor-kennitala`}
-                    label="Kennitala lánastofnunar"
-                    value={debt.creditorKennitala || ''}
+                  <Input
+                    label="Kennitala lánveitanda"
+                    name="creditorKennitala"
+                    value={debt.creditorSsn || ''}
+                    readOnly
                   />
                 </GridColumn>
-              </GridRow>
-              <GridRow>
+
                 <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <ReadOnlyField
-                    name={`own-domicile-${index}-loan-number`}
+                  <Input
                     label="Lánsnúmer"
+                    name="loanNumber"
                     value={debt.loanNumber || ''}
+                    readOnly
                   />
                 </GridColumn>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <ReadOnlyField
-                    name={`own-domicile-${index}-loan-duration`}
-                    label="Lánstími í árum"
-                    value={debt.loanDurationYears?.toString() || ''}
-                  />
-                </GridColumn>
+
+                {debt.loanStartDate && (
+                  <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                    <Input
+                      label="Lántökudagur"
+                      name="loanStartDate"
+                      value={new Date(debt.loanStartDate!).toLocaleDateString(
+                        'is-IS'
+                      )}
+                      readOnly
+                    />
+                  </GridColumn>
+                )}
+
+                {debt.loanDurationYears && (
+                  <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                    <Input
+                      label="Lánstími í árum"
+                      name="loanDurationYears"
+                      value={debt.loanDurationYears}
+                      readOnly
+                    />
+                  </GridColumn>
+                )}
               </GridRow>
               <GridRow>
                 <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <ReadOnlyField
-                    name={`own-domicile-${index}-loan-start-date`}
-                    label="Lántökudagur"
-                    value={
-                      debt.loanStartDate
-                        ? new Date(debt.loanStartDate).toLocaleDateString()
-                        : ''
-                    }
-                  />
-                </GridColumn>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <ReadOnlyField
-                    name={`own-domicile-${index}-domicile-location`}
-                    label="Staðsetning íbúðar"
-                    value={debt.properties?.domicileLocation || ''}
-                  />
-                </GridColumn>
-              </GridRow>
-              <GridRow>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <EditableCurrencyField
-                    name={`own-domicile-${index}-year-payment`}
+                  <CurrencyInput
                     label="Heildargreiðslur ársins"
-                    value={debt.yearPaymentTotal || 0}
+                    name="yearPaymentTotal"
+                    value={formatIcelandicAmount(debt.yearPaymentTotal || 0)}
                     onChange={value =>
                       handleDebtValueChange(debt, 'yearPaymentTotal', value)
                     }
+                    backgroundColor="blue"
                   />
                 </GridColumn>
                 <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <EditableCurrencyField
-                    name={`own-domicile-${index}-nominal-payment`}
+                  <CurrencyInput
                     label="Afborganir af nafnverði"
-                    value={debt.nominalPaymentTotal || 0}
+                    name="nominalPaymentTotal"
+                    value={formatIcelandicAmount(debt.nominalPaymentTotal || 0)}
                     onChange={value =>
                       handleDebtValueChange(debt, 'nominalPaymentTotal', value)
                     }
+                    backgroundColor="blue"
                   />
                 </GridColumn>
               </GridRow>
               <GridRow>
                 <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <EditableCurrencyField
-                    name={`own-domicile-${index}-interest`}
+                  <CurrencyInput
                     label="Vaxtagjöld"
-                    value={debt.interestPaymentTotal}
+                    name="interestPaymentTotal"
+                    value={formatIcelandicAmount(debt.interestPaymentTotal)}
                     onChange={value =>
                       handleDebtValueChange(debt, 'interestPaymentTotal', value)
                     }
+                    backgroundColor="blue"
                   />
                 </GridColumn>
                 <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <EditableCurrencyField
-                    name={`own-domicile-${index}-remaining`}
+                  <CurrencyInput
                     label="Eftirstöðvar skulda"
-                    value={debt.remaining}
+                    name="remaining"
+                    value={formatIcelandicAmount(debt.remaining)}
                     onChange={value =>
                       handleDebtValueChange(debt, 'remaining', value)
                     }
+                    backgroundColor="blue"
+                  />
+                </GridColumn>
+              </GridRow>
+              <GridRow>
+                <GridColumn span={['12/12', '12/12']}>
+                  <Input
+                    name="owndomicile-remaining-total"
+                    label="Samtals eftirstöðvar skulda"
+                    value={formatIcelandicAmount(totalOwnDomicileRemaining)}
+                    type="text"
+                    readOnly
                   />
                 </GridColumn>
               </GridRow>
             </Box>
           ))}
 
-          <TotalSection
-            name="own-domicile-total"
-            label="Samtals eftirstöðvar skulda"
-            value={totals.ownDomicileRemainingTotal}
-          />
-        </Box>
+          {/* Other Debts Section - Only show if there are other debts */}
+          {debtsData.filter(debt => debt.type !== 'OwnDomicile').length > 0 && (
+            <Box>
+              <Box display="flex">
+                <Box marginRight={1}>
+                  <Text variant="h3" marginBottom={2}>
+                    Aðrar skuldir og vaxtagjöld
+                  </Text>
+                </Box>
+                <Tag>5.2</Tag>
+              </Box>
+              {debtsData
+                .filter(debt => debt.type !== 'OwnDomicile')
+                .map((debt, index) => (
+                  <Box key={`other-${index}`}>
+                    <Text variant="h4" marginBottom={2}>
+                      {debt.description || debt.type}
+                    </Text>
+                    <GridRow>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <CurrencyInput
+                          label="Vaxtagjöld"
+                          name="interestPaymentTotal"
+                          value={formatIcelandicAmount(
+                            debt.interestPaymentTotal
+                          )}
+                          onChange={value =>
+                            handleDebtValueChange(
+                              debt,
+                              'interestPaymentTotal',
+                              value
+                            )
+                          }
+                          backgroundColor="blue"
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <CurrencyInput
+                          label="Eftirstöðvar"
+                          name="remaining"
+                          value={formatIcelandicAmount(debt.remaining)}
+                          onChange={value =>
+                            handleDebtValueChange(debt, 'remaining', value)
+                          }
+                          backgroundColor="blue"
+                        />
+                      </GridColumn>
+                    </GridRow>
+                  </Box>
+                ))}
 
-        <Box>
-          <SectionHeader title="Aðrar skuldir og vaxtagjöld" tagNumber="5.2" />
-
-          {groupedDebts.Other.map((debt, index) => (
-            <Box key={`other-debt-${index}`}>
+              {/* Other Debts Total Section */}
               <GridRow>
-                <GridColumn span="12/12" paddingBottom={3}>
-                  <ReadOnlyField
-                    name={`other-debt-${index}-description`}
-                    label="Lýsing"
-                    value={debt.description || ''}
-                  />
-                </GridColumn>
-              </GridRow>
-              <GridRow>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <EditableCurrencyField
-                    name={`other-debt-${index}-interest`}
-                    label="Vaxtagjöld"
-                    value={debt.interestPaymentTotal}
-                    onChange={value =>
-                      handleDebtValueChange(debt, 'interestPaymentTotal', value)
-                    }
-                  />
-                </GridColumn>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <EditableCurrencyField
-                    name={`other-debt-${index}-remaining`}
-                    label="Eftirstöðvar"
-                    value={debt.remaining}
-                    onChange={value =>
-                      handleDebtValueChange(debt, 'remaining', value)
-                    }
+                <GridColumn span={['12/12', '12/12']}>
+                  <Input
+                    name="other-debts-remaining-total"
+                    label="Samtals eftirstöðvar annarra skulda"
+                    value={formatIcelandicAmount(totalOtherDebtsRemaining)}
+                    type="text"
+                    readOnly
+                    backgroundColor="blue"
                   />
                 </GridColumn>
               </GridRow>
             </Box>
-          ))}
+          )}
 
-          <TotalSection
-            name="other-total"
-            label="Samtals eftirstöðvar annarra skulda"
-            value={totals.otherRemainingTotal}
-          />
-        </Box>
-
-        <Box>
-          <Text variant="h3" marginBottom={2}>
-            Heildarskuldir og vaxtagjöld
-          </Text>
-          <GridRow>
-            <GridColumn span="12/12">
-              <ReadOnlyField
-                name="debt-remaining-total"
-                label="Samanlagðar heildarskuldir og vaxtagjöld"
-                value={formatIcelandicAmount(totals.remainingTotal)}
-              />
-            </GridColumn>
-          </GridRow>
-        </Box>
-      </Stack>
+          {/* Grand Total Section */}
+          <Box>
+            <Text variant="h3" marginBottom={2}>
+              Heildarskuldir og vaxtagjöld
+            </Text>
+            <GridRow>
+              <GridColumn span={['12/12', '12/12']}>
+                <Input
+                  name="income-grand-total"
+                  label="Samanlagðar heildarskuldir og vaxtagjöld"
+                  value={formatIcelandicAmount(totalRemainingDebt)}
+                  type="text"
+                  readOnly
+                  backgroundColor="blue"
+                />
+              </GridColumn>
+            </GridRow>
+          </Box>
+        </Stack>
+      )}
     </Box>
   )
 }
