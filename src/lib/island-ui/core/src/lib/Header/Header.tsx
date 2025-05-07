@@ -109,7 +109,6 @@ export const Header = ({
     if (!userName) {
       return null
     }
-
     return (
       <UserMenu
         authenticated={authenticated}

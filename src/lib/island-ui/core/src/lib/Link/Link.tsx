@@ -87,26 +87,17 @@ export const Link: React.FC<React.PropsWithChildren<LinkProps>> = ({
       <NextLink
         href={href}
         as={as}
+        replace={replace}
         shallow={shallow}
         scroll={scroll}
-        passHref
         prefetch={prefetch}
         data-testid={dataTestId}
-        legacyBehavior
+        className={pureChildren ? undefined : classNames}
+        {...(pureChildren ? {} : linkProps)}
+        {...(newTab && !pureChildren ? { target: '_blank' } : {})}
+        tabIndex={skipTab && !pureChildren ? -1 : undefined}
       >
-        {pureChildren ? (
-          children
-        ) : (
-          <a
-            className={classNames}
-            data-testid={dataTestId}
-            {...linkProps}
-            {...(newTab && { target: '_blank' })}
-            tabIndex={skipTab ? -1 : undefined}
-          >
-            {children}
-          </a>
-        )}
+        {children}
       </NextLink>
     )
   } else {

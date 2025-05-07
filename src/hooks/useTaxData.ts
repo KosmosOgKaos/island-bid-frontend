@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react'
 import { useLazyQuery } from '@apollo/client'
-import { GetLatestTaxReturnInfoDocument } from '@/lib/graphql'
+import {
+  GetLatestTaxReturnInfoDocument,
+  GetLatestTaxReturnInfoQuery,
+} from '@/lib/graphql'
 
 type FormChangeEvent = React.ChangeEvent<HTMLInputElement>
 
@@ -15,6 +18,25 @@ interface UseTaxDataReturnType {
   fetchError: string | null
 }
 
+const mapTaxData = (
+  taxReturnInfo: NonNullable<
+    GetLatestTaxReturnInfoQuery['getLatestTaxReturnInfo']
+  >
+) => {
+  // Debts and incomes have no ids so we assign them their index id here
+  return {
+    ...taxReturnInfo,
+    debts: (taxReturnInfo.debts ?? []).map((debt, index) => ({
+      ...debt,
+      id: index,
+    })),
+    incomes: (taxReturnInfo.incomes ?? []).map((income, index) => ({
+      ...income,
+      id: index,
+    })),
+  }
+}
+
 export const useTaxData = ({
   onChange,
 }: UseTaxDataProps): UseTaxDataReturnType => {
@@ -22,34 +44,37 @@ export const useTaxData = ({
   const [fetchError, setFetchError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
-  const [executeQuery] = useLazyQuery(GetLatestTaxReturnInfoDocument, {
-    onCompleted: response => {
-      setIsLoading(false)
+  const [executeQuery] = useLazyQuery<GetLatestTaxReturnInfoQuery>(
+    GetLatestTaxReturnInfoDocument,
+    {
+      onCompleted: response => {
+        setIsLoading(false)
 
-      if (response && response.getLatestTaxReturnInfo) {
-        const taxData = response.getLatestTaxReturnInfo
+        if (response && response.getLatestTaxReturnInfo) {
+          const taxData = response.getLatestTaxReturnInfo
 
-        localStorage.setItem('taxData', JSON.stringify(taxData))
+          localStorage.setItem('taxData', JSON.stringify(mapTaxData(taxData)))
 
-        onChange({
-          target: {
-            name: 'taxData',
-            value: taxData,
-          },
-        } as FormChangeEvent)
+          onChange({
+            target: {
+              name: 'taxData',
+              value: taxData,
+            },
+          } as FormChangeEvent)
 
-        setIsDataFetched(true)
-        setFetchError(null)
-      } else {
-        setFetchError('Engin gögn fundust')
-      }
-    },
-    onError: error => {
-      setFetchError(`Villa kom upp við að sækja gögn: ${error.message}`)
-      setIsLoading(false)
-    },
-    fetchPolicy: 'network-only',
-  })
+          setIsDataFetched(true)
+          setFetchError(null)
+        } else {
+          setFetchError('Engin gögn fundust')
+        }
+      },
+      onError: error => {
+        setFetchError(`Villa kom upp við að sækja gögn: ${error.message}`)
+        setIsLoading(false)
+      },
+      fetchPolicy: 'network-only',
+    }
+  )
 
   const fetchTaxData = useCallback(() => {
     setIsLoading(true)
