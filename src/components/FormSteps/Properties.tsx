@@ -5,6 +5,7 @@ import {
   GridRow,
   Input,
   Stack,
+  Tag,
   Text,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
@@ -101,79 +102,110 @@ export const Properties = ({ form }: { form: FormProps }) => {
         <Text>Engar eignir fundust.</Text>
       ) : (
         <Stack space={7}>
-          {propertiesData.map((property, index) => (
-            <Box key={`${property.type}-${index}`}>
-              <GridRow>
-                <GridColumn span="12/12">
-                  <Text variant="h4" marginBottom={2}>
-                    {property.type === 'DomesticProperty'
-                      ? 'Fasteignir'
-                      : property.type === 'Vehicle'
-                      ? 'Bifreiðir'
-                      : 'Eign'}
+          {/* Domestic Properties Section */}
+          {propertiesData.filter(p => p.type === 'DomesticProperty').length >
+            0 && (
+            <Box>
+              <Box display="flex">
+                <Box marginRight={1}>
+                  <Text variant="h3" marginBottom={2}>
+                    Fasteignir
                   </Text>
-                </GridColumn>
+                </Box>
+                <Tag>4.1</Tag>
+              </Box>
 
-                {property.type === 'DomesticProperty' && (
-                  <>
-                    <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                      <Input
-                        label="Fastanúmer"
-                        name="fastanumer"
-                        value={property.properties.fastanumer || ''}
-                        backgroundColor="blue"
-                        readOnly
-                      />
-                    </GridColumn>
-                    <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                      <Input
-                        label="Heimilisfang"
-                        name="address"
-                        value={property.properties.address || ''}
-                        backgroundColor="blue"
-                        readOnly
-                      />
-                    </GridColumn>
-                  </>
-                )}
-
-                {property.type === 'Vehicle' && (
-                  <>
-                    <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                      <Input
-                        label="Skráningarnúmer"
-                        name="registrationNumber"
-                        value={property.properties.registrationNumber || ''}
-                        backgroundColor="blue"
-                        readOnly
-                      />
-                    </GridColumn>
-                    <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                      <Input
-                        label="Árgerð"
-                        name="yearOfPurchase"
-                        value={property.properties.yearOfPurchase || ''}
-                        backgroundColor="blue"
-                        readOnly
-                      />
-                    </GridColumn>
-                  </>
-                )}
-
-                <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
-                  <CurrencyInput
-                    label={property.valueName}
-                    name="value"
-                    value={formatIcelandicAmount(property.value)}
-                    onChange={value =>
-                      handlePropertyChange(property, 'value', value)
-                    }
-                    backgroundColor="blue"
-                  />
-                </GridColumn>
-              </GridRow>
+              {propertiesData
+                .filter(property => property.type === 'DomesticProperty')
+                .map((property, index) => (
+                  <Box key={`domestic-${index}`}>
+                    <GridRow>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <Input
+                          label="Fastanúmer"
+                          name="fastanumer"
+                          value={property.properties.fastanumer || ''}
+                          backgroundColor="blue"
+                          readOnly
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <Input
+                          label="Heimilisfang"
+                          name="address"
+                          value={property.properties.address || ''}
+                          backgroundColor="blue"
+                          readOnly
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+                        <CurrencyInput
+                          label="Fasteignamat"
+                          name="value"
+                          value={formatIcelandicAmount(property.value)}
+                          onChange={value =>
+                            handlePropertyChange(property, 'value', value)
+                          }
+                          backgroundColor="blue"
+                        />
+                      </GridColumn>
+                    </GridRow>
+                  </Box>
+                ))}
             </Box>
-          ))}
+          )}
+
+          {/* Vehicles Section */}
+          {propertiesData.filter(p => p.type === 'Vehicle').length > 0 && (
+            <Box>
+              <Box display="flex">
+                <Box marginRight={1}>
+                  <Text variant="h3" marginBottom={2}>
+                    Bifreiðir
+                  </Text>
+                </Box>
+                <Tag>4.2</Tag>
+              </Box>
+
+              {propertiesData
+                .filter(property => property.type === 'Vehicle')
+                .map((property, index) => (
+                  <Box key={`vehicle-${index}`}>
+                    <GridRow>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <Input
+                          label="Skráningarnúmer"
+                          name="registrationNumber"
+                          value={property.properties.registrationNumber || ''}
+                          backgroundColor="blue"
+                          readOnly
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <Input
+                          label="Árgerð"
+                          name="yearOfPurchase"
+                          value={property.properties.yearOfPurchase || ''}
+                          backgroundColor="blue"
+                          readOnly
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+                        <CurrencyInput
+                          label="Kaupverð"
+                          name="value"
+                          value={formatIcelandicAmount(property.value)}
+                          onChange={value =>
+                            handlePropertyChange(property, 'value', value)
+                          }
+                          backgroundColor="blue"
+                        />
+                      </GridColumn>
+                    </GridRow>
+                  </Box>
+                ))}
+            </Box>
+          )}
 
           {/* Grand Total Section */}
           <Box>

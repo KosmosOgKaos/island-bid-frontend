@@ -43,7 +43,7 @@ export interface DebtItem {
   description?: string
   currency: string
   creditor?: string
-  creditorKennitala?: string
+  creditorSsn?: string
   loanNumber?: string
   loanStartDate?: string
   loanDurationYears?: number
