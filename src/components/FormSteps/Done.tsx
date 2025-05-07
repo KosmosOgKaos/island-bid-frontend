@@ -11,14 +11,16 @@ import companySvg from '../../../assets/company.svg'
 export const Done = () => {
   return (
     <Box>
-      <Text variant="h2">Staðfesting</Text>
+      <Text variant="h2" as="h2">
+        Staðfesting
+      </Text>
       <Box marginY={5}>
         <AlertMessage
           title="Skattframtal þitt hefur verið sent til Skattsins"
           type="success"
         />
       </Box>
-      <Text variant="h3" marginBottom={2}>
+      <Text variant="h3" as="h3" marginBottom={2}>
         Hvað gerist næst?
       </Text>
       <BulletList>

@@ -90,13 +90,10 @@ export const Properties = ({ form }: { form: FormProps }) => {
 
   return (
     <Box>
-      <Text variant="h2" marginBottom={2}>
+      <Text variant="h2" as="h2" marginBottom={2}>
         Eignir ársins 2024
       </Text>
-      <Text marginBottom={5}>
-        Vinsamlegast staðfestu eignirnar þínar og uppfærðu matsverð ef þörf er
-        á.
-      </Text>
+      <Text marginBottom={5}>Upplýsingar um eignir.</Text>
 
       {propertiesData.length === 0 ? (
         <Text>Engar eignir fundust.</Text>
@@ -108,12 +105,15 @@ export const Properties = ({ form }: { form: FormProps }) => {
             <Box>
               <Box display="flex">
                 <Box marginRight={1}>
-                  <Text variant="h3" marginBottom={2}>
-                    Fasteignir
+                  <Text variant="h3" as="h3">
+                    Innlendar fasteignir
                   </Text>
                 </Box>
                 <Tag>4.1</Tag>
               </Box>
+              <Text marginBottom={3}>
+                Upplýsingar um þær innlendu fasteignir sem þú átt í árslok
+              </Text>
 
               {propertiesData
                 .filter(property => property.type === 'DomesticProperty')
@@ -138,7 +138,7 @@ export const Properties = ({ form }: { form: FormProps }) => {
                           readOnly
                         />
                       </GridColumn>
-                      <GridColumn span={['12/12', '12/12']}>
+                      <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
                         <CurrencyInput
                           label="Fasteignamat"
                           name="value"
@@ -152,6 +152,23 @@ export const Properties = ({ form }: { form: FormProps }) => {
                     </GridRow>
                   </Box>
                 ))}
+                
+              <GridRow>
+                <GridColumn span={['12/12', '12/12']}>
+                  <Input
+                    name="domestic-properties-total"
+                    label="Samtals innlendar fasteignir"
+                    value={formatIcelandicAmount(
+                      propertiesData
+                        .filter(property => property.type === 'DomesticProperty')
+                        .reduce((sum, property) => sum + property.value, 0)
+                    )}
+                    type="text"
+                    readOnly
+                    backgroundColor="blue"
+                  />
+                </GridColumn>
+              </GridRow>
             </Box>
           )}
 
@@ -160,12 +177,18 @@ export const Properties = ({ form }: { form: FormProps }) => {
             <Box>
               <Box display="flex">
                 <Box marginRight={1}>
-                  <Text variant="h3" marginBottom={2}>
+                  <Text variant="h3" as="h3">
                     Bifreiðir
                   </Text>
                 </Box>
                 <Tag>4.2</Tag>
               </Box>
+              <Text marginBottom={3}>
+                Upplýsingar um þá bíla sem þú átt í árslok koma hér fram.
+                Bifreiðir sem keyptar voru á síðasta ári færast á kaupverði. Ef
+                upplýsingar um kaupverð vantar ber þér að færa þær inn í
+                framtalið.
+              </Text>
 
               {propertiesData
                 .filter(property => property.type === 'Vehicle')
@@ -204,12 +227,30 @@ export const Properties = ({ form }: { form: FormProps }) => {
                     </GridRow>
                   </Box>
                 ))}
+                
+              {/* Vehicles Total Section */}
+              <GridRow>
+                <GridColumn span={['12/12', '12/12']}>
+                  <Input
+                    name="vehicles-total"
+                    label="Samtals verðmæti bifreiða"
+                    value={formatIcelandicAmount(
+                      propertiesData
+                        .filter(property => property.type === 'Vehicle')
+                        .reduce((sum, property) => sum + (property.value || 0), 0)
+                    )}
+                    type="text"
+                    readOnly
+                    backgroundColor="blue"
+                  />
+                </GridColumn>
+              </GridRow>
             </Box>
           )}
 
           {/* Grand Total Section */}
           <Box>
-            <Text variant="h3" marginBottom={2}>
+            <Text variant="h3" as="h3" marginBottom={2}>
               Heildareignir
             </Text>
             <GridRow>

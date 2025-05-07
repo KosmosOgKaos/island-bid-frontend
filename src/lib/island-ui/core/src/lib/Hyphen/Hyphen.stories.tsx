@@ -2,7 +2,7 @@ import React from 'react'
 import { HyphenProps, Hyphen } from './Hyphen'
 import { Text } from '../Text/Text'
 
-const container = (Story) => (
+const container = Story => (
   <div
     style={{
       resize: 'horizontal',

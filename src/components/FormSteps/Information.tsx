@@ -1,5 +1,6 @@
 import React from 'react'
 import {
+  AlertMessage,
   Box,
   GridColumn,
   GridRow,
@@ -81,11 +82,23 @@ export const Information = ({ form }: { form: FormProps }) => {
   return (
     <Box>
       <Box marginRight={1} marginBottom={2}>
-        <Text variant="h2">Persónuupplýsingar</Text>
+        <Text variant="h2" as="h2">
+          Upplýsingar
+        </Text>
       </Box>
       <Text marginBottom={5}>
-        Vinsamlegast staðfestu persónuupplýsingarnar þínar.
+        Mikilvægt er að skrá réttar upplýsingar svo hægt sé að hafa samband og
+        senda þér tilkynningar um mikilvæg skattaleg málefni.
       </Text>
+      <Box marginBottom={5}>
+        <AlertMessage
+          type="info"
+          title="Áritun úr Þjóðskrá Íslands"
+          message="Senda skal leiðréttingu til Þjóðskrár Íslands í eftirfarandi tilvikum:
+Ef áritun á framtal (nöfn, kennitölur, heimilisfang) er ekki rétt.
+Síðasta skráða heimili á Íslandi er áritað hjá þeim sem eru búsettir erlendis."
+        />
+      </Box>
 
       <GridRow>
         <GridColumn span={['12/12', '6/12']} paddingBottom={3}>

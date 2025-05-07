@@ -106,11 +106,13 @@ export const Income = ({ form }: { form: FormProps }) => {
   return (
     <Box>
       <Box marginRight={1} marginBottom={2}>
-        <Text variant="h2">Tekjur ársins 2024</Text>
+        <Text variant="h2" as="h2">
+          Tekjur ársins 2024
+        </Text>
       </Box>
       <Text marginBottom={5}>
-        Vinsamlegast fylltu út tekjurnar þínar. Lorem ipsum dolor sit amet
-        consectetur adipisicing elit. Cumque optio necessitatibus omnis.
+        Heildartekjur þínar hjá vinnuveitendum áður en tekið er tillit til
+        greiddra skatta í staðgreiðslu og iðngjalds í lífeyrissjóð.
       </Text>
 
       <Stack space={7}>
@@ -118,13 +120,15 @@ export const Income = ({ form }: { form: FormProps }) => {
         <Box>
           <Box display="flex">
             <Box marginRight={1}>
-              <Text variant="h3">Launatekjur og starfstengdar greiðslur</Text>
+              <Text variant="h3" as="h3">
+                Launatengdargreiðslur
+              </Text>
             </Box>
             <Tag>3.1</Tag>
           </Box>
           <Text marginBottom={3}>
-            T.d. ákvæðislaun, biðlaun, nefndarlaun, stjórnarlaun, launabætur,
-            staðaruppbót, o.fl.
+            Heildartekjur þínar hjá vinnuveitendum áður en tekið er tillit til
+            greiddra skatta í staðgreiðslu og iðngjalds í lífeyrissjóð.
           </Text>
           {groupedIncome.Wages.map((item, index) => (
             <GridRow key={`wages-${item.id || index}`}>
@@ -167,12 +171,16 @@ export const Income = ({ form }: { form: FormProps }) => {
         <Box>
           <Box display="flex">
             <Box marginRight={1}>
-              <Text variant="h3">Starfstengd hlunnindi</Text>
+              <Text variant="h3" as="h3">
+                Starfstengd hlunnindi
+              </Text>
             </Box>
             <Tag>3.2</Tag>
           </Box>
           <Text marginBottom={3}>
-            T.d. ökutækjastyrkur, dagpeningar og/eða önnur hlunnindi{' '}
+            Hér er t.d. átt við um fatnað, fæði, húsnæði, hvers konar fríðindi,
+            greiðslur í vörum eða afurðum, svo og framlög og gjafir sé verðmætið
+            hærra en almennt gerist um tækifærisgjafir.
           </Text>
 
           {groupedIncome.Benefits.map((item, index) => (
@@ -216,13 +224,15 @@ export const Income = ({ form }: { form: FormProps }) => {
         <Box>
           <Box display="flex">
             <Box marginRight={1}>
-              <Text variant="h3">Aðrar tekjur</Text>
+              <Text variant="h3" as="h3">
+                Aðrar tekjur
+              </Text>
             </Box>
             <Tag>3.3</Tag>
           </Box>
           <Text marginBottom={3}>
-            T.d. lífeyrisgreiðslur, greiðslur frá Tryggingastofnun, aðrar
-            bótagreiðslur, styrkir o.fl.
+            Lífeyrisgreiðslur, greiðslur frá Tryggingastofnun ríkisins, aðrar
+            bótagreiðslur og styrkir teljast til skattskyldra tekna.
           </Text>
           {groupedIncome.Other.map((item, index) => (
             <GridRow key={`other-${item.id || index}`}>
@@ -263,7 +273,7 @@ export const Income = ({ form }: { form: FormProps }) => {
 
         {/* Grand Total Section */}
         <Box>
-          <Text variant="h3" marginBottom={2}>
+          <Text variant="h3" as="h3" marginBottom={2}>
             Heildartekjur
           </Text>
           <GridRow>

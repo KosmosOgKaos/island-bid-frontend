@@ -107,7 +107,7 @@ export default function ApplicationPage() {
   ) => {
     const { name, value } = e.target
     // On data change, this function updates the form data state
-    
+
     if ('type' in e.target && e.target.type === 'checkbox') {
       const target = e.target as HTMLInputElement
       setFormData(prev => ({
@@ -173,7 +173,7 @@ export default function ApplicationPage() {
     try {
       // Save current form data to localStorage
       localStorage.setItem('taxData', JSON.stringify(formData))
-      
+
       // Show success toast notification
       toast.success('Upplýsingar þínar hafa verið vistaðar')
     } catch (error) {
@@ -220,9 +220,9 @@ export default function ApplicationPage() {
               <Box display="flex">
                 <Hidden below="sm">
                   <Box marginRight={2}>
-                    <Button 
+                    <Button
                       onClick={saveApplication}
-                      variant="ghost" 
+                      variant="ghost"
                       icon="save"
                       iconType="outline"
                     >
@@ -237,9 +237,9 @@ export default function ApplicationPage() {
             )}
             {!currentStep.next && (
               <Hidden below="sm">
-                <Button 
+                <Button
                   onClick={saveApplication}
-                  variant="ghost" 
+                  variant="ghost"
                   icon="save"
                   iconType="outline"
                 >

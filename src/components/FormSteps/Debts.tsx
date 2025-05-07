@@ -75,7 +75,9 @@ export const Debts = ({ form }: { form: FormProps }) => {
   return (
     <Box>
       <Box marginRight={1} marginBottom={2}>
-        <Text variant="h2">Skuldir og vaxtagjöld 2024</Text>
+        <Text variant="h2" as="h2">
+          Skuldir og vaxtagjöld 2024
+        </Text>
       </Box>
       <Text marginBottom={5}>
         Vinsamlegast fylltu út skuldir og vaxtagjöld. Lorem ipsum dolor sit amet
@@ -91,12 +93,16 @@ export const Debts = ({ form }: { form: FormProps }) => {
             <Box key={`owndomicile-${index}`}>
               <Box display="flex">
                 <Box marginRight={1}>
-                  <Text variant="h3" marginBottom={2}>
+                  <Text variant="h3" as="h3">
                     Vaxtagjöld vegna íbúðarhúsnæðis til eigin nota
                   </Text>
                 </Box>
                 <Tag>5.1</Tag>
               </Box>
+              <Text marginBottom={3}>
+                Lán vegna kaupa eða byggingar á íbúðarhúsnæði til eigin nota
+                færast í þennan reit.
+              </Text>
               <GridRow>
                 {debt.properties?.yearOfPurchase && (
                   <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
@@ -237,17 +243,21 @@ export const Debts = ({ form }: { form: FormProps }) => {
             <Box>
               <Box display="flex">
                 <Box marginRight={1}>
-                  <Text variant="h3" marginBottom={2}>
+                  <Text variant="h3" as="h3">
                     Aðrar skuldir og vaxtagjöld
                   </Text>
                 </Box>
                 <Tag>5.2</Tag>
               </Box>
+              <Text marginBottom={3}>
+                Sem dæmi er að finna hér upplýsingar um námslán, ökutækjalán og
+                skuldir sem ekki falla undir reit 5.1.
+              </Text>
               {debtsData
                 .filter(debt => debt.type !== 'OwnDomicile')
                 .map((debt, index) => (
                   <Box key={`other-${index}`}>
-                    <Text variant="h4" marginBottom={2}>
+                    <Text variant="h4" as="h4" marginBottom={2}>
                       {debt.description || debt.type}
                     </Text>
                     <GridRow>
@@ -301,7 +311,7 @@ export const Debts = ({ form }: { form: FormProps }) => {
 
           {/* Grand Total Section */}
           <Box>
-            <Text variant="h3" marginBottom={2}>
+            <Text variant="h3" as="h3" marginBottom={2}>
               Heildarskuldir og vaxtagjöld
             </Text>
             <GridRow>

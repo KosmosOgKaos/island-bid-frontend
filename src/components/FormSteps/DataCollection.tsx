@@ -18,9 +18,7 @@ export const DataCollection = ({ form }: { form: FormProps }) => {
     onChange,
   })
 
-  const handleConsentChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleConsentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.target
 
     // Update consent state
@@ -39,7 +37,7 @@ export const DataCollection = ({ form }: { form: FormProps }) => {
 
   return (
     <Box>
-      <Text variant="h2" marginBottom={3}>
+      <Text variant="h2" as="h2" marginBottom={3}>
         Gagnaöflun
       </Text>
 
@@ -47,24 +45,26 @@ export const DataCollection = ({ form }: { form: FormProps }) => {
         <Box marginRight={2}>
           <Icon color="blue400" type="outline" size="large" icon="download" />
         </Box>
-        <Text variant="h4" marginBottom={6}>
+        <Text variant="h4" as="h4" marginBottom={6}>
           Eftirfarandi gögn verða sótt rafrænt
         </Text>
       </Box>
-
-      <Text variant="h5" color="blue400">
+      <Text variant="h5" as="h5" color="blue400">
         Persónuupplýsingar úr Þjóðskrá
       </Text>
       <Text marginBottom={4}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Upplýsingar frá Þjóðskrá um kennitölu og lögheimili.
       </Text>
-
-      <Text variant="h5" color="blue400">
-        Netfang og símanúmer úr þínum stillingum
+      <Text variant="h5" as="h5" color="blue400">
+        Fjárhagsupplýsingar
       </Text>
       <Text marginBottom={4}>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Upplýsingar um tekjur, eignir og skuldir frá Skattinum.
       </Text>
+      <Text variant="h5" as="h5" color="blue400">
+        Upplýsingar frá Ísland.is
+      </Text>
+      <Text marginBottom={4}>Netfang og símanúmer úr þínum stillingum.</Text>
 
       <Box marginBottom={7} marginTop={4}>
         <Checkbox
@@ -73,7 +73,6 @@ export const DataCollection = ({ form }: { form: FormProps }) => {
           label="Ég samþykki að gögn verði sótt rafrænt"
           checked={data.consent || false}
           backgroundColor="blue"
-
           onChange={handleConsentChange}
           large
         />
