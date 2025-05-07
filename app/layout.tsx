@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'Island Bid Starter',
+  title: 'Ísland.is Útboðsverkefni 2025',
   description: 'Island.is UI Components',
 }
 
@@ -31,9 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ApolloWrapper>
-          <SsnProvider>
-            {children}
-          </SsnProvider>
+          <SsnProvider>{children}</SsnProvider>
         </ApolloWrapper>
       </body>
     </html>

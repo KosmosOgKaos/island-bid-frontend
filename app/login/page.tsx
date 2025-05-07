@@ -49,11 +49,15 @@ export default function LoginPage() {
               <Box display="flex" justifyContent="center">
               <Box paddingTop={[0, 0, 4]}>
                 <Stack space={4}>
-                  <Box display="flex" justifyContent="center" position="relative">
-                    <Box 
-                      position="absolute" 
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    position="relative"
+                  >
+                    <Box
+                      position="absolute"
                       style={{ top: '-3px', zIndex: 10 }}
-                      background="white" 
+                      background="white"
                       padding={2}
                       borderRadius="large"
                     >
@@ -94,6 +98,7 @@ export default function LoginPage() {
                         <Button
                           onClick={handleLogin}
                           fluid
+                          data-testid="authentication-login-button"
                           disabled={!phoneNumber || phoneNumber.length < 7}
                         >
                           Auðkenna

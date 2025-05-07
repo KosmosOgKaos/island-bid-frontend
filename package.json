@@ -50,6 +50,7 @@
     "@graphql-codegen/client-preset": "4.8.0",
     "@graphql-codegen/schema-ast": "^4.1.0",
     "@graphql-codegen/typescript-react-apollo": "^4.3.2",
+    "@playwright/test": "^1.52.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
