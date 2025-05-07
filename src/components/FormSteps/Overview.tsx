@@ -397,7 +397,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                           <GridColumn span="6/12" paddingBottom={2}>
                             <FieldItem
                               label="Fastanúmer"
-                              value={property.properties.fastanumer}
+                              value={property.properties?.fastanumer}
                             />
                           </GridColumn>
                           <GridColumn
@@ -415,7 +415,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                           >
                             <FieldItem
                               label="Heimilisfang"
-                              value={property.properties.address}
+                              value={property.properties?.address}
                             />
                           </GridColumn>
                         </GridRow>
@@ -473,7 +473,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                           <GridColumn span="6/12" paddingBottom={2}>
                             <FieldItem
                               label="Skráningarnúmer"
-                              value={property.properties.registrationNumber}
+                              value={property.properties?.registrationNumber}
                             />
                           </GridColumn>
                           <GridColumn
@@ -493,7 +493,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                           >
                             <FieldItem
                               label="Kaupár"
-                              value={property.properties.yearOfPurchase}
+                              value={property.properties?.yearOfPurchase}
                             />
                           </GridColumn>
                         </GridRow>

@@ -21,6 +21,7 @@ import { validateStep } from '@/utils/formValidation'
 import Header from '../../src/components/Header'
 import taxLogo from '../../assets/taxLogo.png'
 import { useSsn } from '../context/SsnContext'
+import { useCreateSubmissionMutation } from '@/lib/graphql'
 
 interface TaxData {
   person?: Person
@@ -48,6 +49,7 @@ export default function ApplicationPage() {
   const [activeStepIndex, setActiveStepIndex] = useState(0)
   const [formData, setFormData] = useState<FormData>({})
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [createSubmission] = useCreateSubmissionMutation()
 
   useEffect(() => {
     if (!ssn) {
@@ -158,7 +160,67 @@ export default function ApplicationPage() {
     }
 
     setValidationError(null)
+
+    if (currentStep.id === 'overview') {
+      submitData()
+    }
     router.push(`/application?step=${nextStepId}`)
+  }
+
+  const submitData = async () => {
+    try {
+      if (!ssn) {
+        return
+      }
+      
+      // Transform the data to match CreateSubmissionInput type
+      const transformedData = {
+        incomes: (formData.incomes || []).map((income: IncomeItem) => ({
+          type: income.type,
+          payer: income.payer,
+          amount: income.amount,
+          currency: income.currency,
+          explanation: income.explanation
+        })),
+        properties: (formData.properties || []).map((property: PropertyItem) => ({
+          type: property.type,
+          valueName: property.valueName,
+          value: property.value,
+          currency: property.currency,
+          properties: property.properties
+        })),
+        debts: (formData.debts || []).map((debt: DebtItem) => ({
+          type: debt.type,
+          description: debt.description,
+          currency: debt.currency,
+          creditor: debt.creditor,
+          creditorSsn: debt.creditorSsn,
+          loanNumber: debt.loanNumber,
+          loanStartDate: debt.loanStartDate,
+          loanDurationYears: debt.loanDurationYears,
+          yearPaymentTotal: debt.yearPaymentTotal,
+          nominalPaymentTotal: debt.nominalPaymentTotal,
+          interestPaymentTotal: debt.interestPaymentTotal,
+          remaining: debt.remaining,
+          properties: debt.properties
+        }))
+      }
+
+      const result = await createSubmission({
+        variables: {
+          ssn,
+          input: transformedData
+        },
+      })
+
+      if (result.data?.createSubmission) {
+        console.log("SUBMITTED YEEEEAAH")
+      } else {
+        console.log("OH NO OH FUCK")
+      }
+    } catch (error) {
+      console.error('Error submitting tax data:', error)
+    }
   }
 
   const goToPrevStep = () => {
