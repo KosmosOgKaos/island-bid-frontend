@@ -10,6 +10,9 @@ import {
   GridColumn,
   Button,
   Text,
+  toast,
+  ToastContainer,
+  Hidden,
 } from '@island.is/island-ui/core'
 import { formSteps } from '@/components/FormSteps/formSteps'
 import { IncomeItem, PropertyItem, DebtItem, Person } from '@/lib/types'
@@ -166,6 +169,19 @@ export default function ApplicationPage() {
     }
   }
 
+  const saveApplication = () => {
+    try {
+      // Save current form data to localStorage
+      localStorage.setItem('taxData', JSON.stringify(formData))
+      
+      // Show success toast notification
+      toast.success('Upplýsingar þínar hafa verið vistaðar')
+    } catch (error) {
+      console.error('Error saving application:', error)
+      toast.error('Villa kom upp við vistun', { autoClose: 3000 })
+    }
+  }
+
   const renderStep = () => {
     const StepComponent = currentStep.component
 
@@ -199,11 +215,39 @@ export default function ApplicationPage() {
               Til baka
             </Button>
           )}
-          {currentStep.next && (
-            <Button onClick={goToNextStep} icon="arrowForward">
-              Halda áfram
-            </Button>
-          )}
+          <Box display="flex">
+            {currentStep.next && (
+              <Box display="flex">
+                <Hidden below="sm">
+                  <Box marginRight={2}>
+                    <Button 
+                      onClick={saveApplication}
+                      variant="ghost" 
+                      icon="save"
+                      iconType="outline"
+                    >
+                      Vista
+                    </Button>
+                  </Box>
+                </Hidden>
+                <Button onClick={goToNextStep} icon="arrowForward">
+                  Halda áfram
+                </Button>
+              </Box>
+            )}
+            {!currentStep.next && (
+              <Hidden below="sm">
+                <Button 
+                  onClick={saveApplication}
+                  variant="ghost" 
+                  icon="save"
+                  iconType="outline"
+                >
+                  Vista
+                </Button>
+              </Hidden>
+            )}
+          </Box>
         </Box>
       </Box>
     )
@@ -236,6 +280,7 @@ export default function ApplicationPage() {
             }}
             userAsDropdown={true}
           />
+          <ToastContainer />
         </GridContainer>
       </Box>
       <GridContainer>
