@@ -59,5 +59,3 @@ export interface DebtItem {
   createdAt: string
   updatedAt: string
 }
-
-
