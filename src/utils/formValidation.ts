@@ -1,4 +1,5 @@
 import { Person } from '@/lib/types'
+import { isValidPhoneNumber } from 'libphonenumber-js'
 
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -6,8 +7,7 @@ export const validateEmail = (email: string): boolean => {
 }
 
 export const validatePhoneNumber = (phone: string): boolean => {
-  const phoneRegex = /^(\+?\d{1,3}[- ]?)?\d{3}[- ]?\d{4}$/
-  return phoneRegex.test(phone)
+  return isValidPhoneNumber(phone, 'IS') || isValidPhoneNumber(phone)
 }
 interface FormData {
   consent?: boolean
@@ -15,23 +15,23 @@ interface FormData {
   [key: string]: unknown
 }
 
-export function validateDataCollectionStep(formData: FormData): { 
+export function validateDataCollectionStep(formData: FormData): {
   isValid: boolean
-  errorMessage?: string 
+  errorMessage?: string
 } {
   if (!formData.consent) {
     return {
       isValid: false,
-      errorMessage: 'Vinsamlegast samþykktu að gögn verði sótt rafrænt.'
+      errorMessage: 'Vinsamlegast samþykktu að gögn verði sótt rafrænt.',
     }
   }
 
   return { isValid: true }
 }
 
-export function validateInformationStep(formData: FormData): { 
+export function validateInformationStep(formData: FormData): {
   isValid: boolean
-  errorMessage?: string 
+  errorMessage?: string
 } {
   const person = (formData.person as Person) || {}
   const email = person.email || ''
@@ -41,7 +41,7 @@ export function validateInformationStep(formData: FormData): {
   if (!email || !validateEmail(email)) {
     return {
       isValid: false,
-      errorMessage: 'Vinsamlegast sláðu inn gilt netfang.'
+      errorMessage: 'Vinsamlegast sláðu inn gilt netfang.',
     }
   }
 
@@ -49,15 +49,19 @@ export function validateInformationStep(formData: FormData): {
   if (!telephone || !validatePhoneNumber(telephone)) {
     return {
       isValid: false,
-      errorMessage: 'Vinsamlegast sláðu inn gilt símanúmer.'
+      errorMessage: 'Vinsamlegast sláðu inn gilt símanúmer.',
     }
   }
 
   return { isValid: true }
 }
-export function validateStep(stepId: string, formData: FormData): { 
+
+export function validateStep(
+  stepId: string,
+  formData: FormData
+): {
   isValid: boolean
-  errorMessage?: string 
+  errorMessage?: string
 } {
   switch (stepId) {
     case 'dataCollection':
