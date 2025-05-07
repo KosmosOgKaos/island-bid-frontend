@@ -13,9 +13,11 @@ import {
   toast,
   ToastContainer,
   Hidden,
+  AlertMessage,
 } from '@island.is/island-ui/core'
 import { formSteps } from '@/components/FormSteps/formSteps'
 import { IncomeItem, PropertyItem, DebtItem, Person } from '@/lib/types'
+import { validateStep } from '@/utils/formValidation'
 import Header from '../../src/components/Header'
 import taxLogo from '../../assets/taxLogo.png'
 import { useSsn } from '../context/SsnContext'
@@ -147,23 +149,20 @@ export default function ApplicationPage() {
       return
     }
 
-    // Handle data collection step special validation
-    if (currentStep.id === 'dataCollection') {
-      if (!formData.consent) {
-        setValidationError('Vinsamlegast samþykktu að gögn verði sótt rafrænt.')
-        return
-      }
+    // Validate the current step
+    const validationResult = validateStep(currentStep.id, formData)
 
-      setValidationError(null)
-      router.push(`/application?step=${nextStepId}`)
-    } else {
-      // For other steps, navigate immediately
-      setValidationError(null)
-      router.push(`/application?step=${nextStepId}`)
+    if (!validationResult.isValid) {
+      setValidationError(validationResult.errorMessage || '')
+      return
     }
+
+    setValidationError(null)
+    router.push(`/application?step=${nextStepId}`)
   }
 
   const goToPrevStep = () => {
+    setValidationError(null)
     if (currentStep && currentStep.prev) {
       router.push(`?step=${currentStep.prev}`)
     }
@@ -195,9 +194,11 @@ export default function ApplicationPage() {
         />
 
         {validationError && (
-          <Text variant="eyebrow" color="red600">
-            {validationError}
-          </Text>
+          <AlertMessage
+            type="error"
+            title=""
+            message={validationError}
+          />
         )}
 
         <Box
@@ -233,7 +234,9 @@ export default function ApplicationPage() {
                   </Hidden>
                 )}
                 <Button onClick={goToNextStep} icon="arrowForward">
-                  {currentStep.id === 'overview' ? 'Skila skattframtali' : 'Halda áfram'}
+                  {currentStep.id === 'overview'
+                    ? 'Skila skattframtali'
+                    : 'Halda áfram'}
                 </Button>
               </Box>
             )}
