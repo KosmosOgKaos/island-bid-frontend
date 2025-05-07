@@ -33,8 +33,8 @@ export default defineConfig({
     video: {
       mode: 'on',
       size: {
-        height: 640,
-        width: 480,
+        height: 1020,
+        width: 720,
       },
     },
   },
