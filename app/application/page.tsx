@@ -60,7 +60,6 @@ export default function ApplicationPage() {
 
   useEffect(() => {
     try {
-      // Load tax data from localStorage on component mount
       const savedTaxData = localStorage.getItem('taxData')
 
       if (savedTaxData) {
@@ -104,8 +103,8 @@ export default function ApplicationPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target
-
-    // Special handling for checkbox inputs
+    // On data change, this function updates the form data state
+    
     if ('type' in e.target && e.target.type === 'checkbox') {
       const target = e.target as HTMLInputElement
       setFormData(prev => ({
@@ -115,9 +114,7 @@ export default function ApplicationPage() {
       return
     }
 
-    // Special handling for the taxData case from useTaxData hook
     if (name === 'taxData' && typeof value === 'object') {
-      // Extract individual data sections from the taxData object
       const taxData = value as TaxData
 
       setFormData(prev => {
@@ -149,13 +146,11 @@ export default function ApplicationPage() {
 
     // Handle data collection step special validation
     if (currentStep.id === 'dataCollection') {
-      // Validate consent checkbox
       if (!formData.consent) {
         setValidationError('Vinsamlegast samþykktu að gögn verði sótt rafrænt.')
         return
       }
 
-      // Clear any validation errors when continuing
       setValidationError(null)
       router.push(`/application?step=${nextStepId}`)
     } else {
@@ -172,8 +167,6 @@ export default function ApplicationPage() {
   }
 
   const renderStep = () => {
-    if (!currentStep) return <div>Step not found</div>
-
     const StepComponent = currentStep.component
 
     return (
