@@ -15,6 +15,7 @@ import { formSteps } from '@/components/FormSteps/formSteps'
 import { IncomeItem, PropertyItem, DebtItem, Person } from '@/lib/types'
 import Header from '../../src/components/Header'
 import taxLogo from '../../assets/taxLogo.png'
+import { useSsn } from '../context/SsnContext'
 
 interface TaxData {
   person?: Person
@@ -36,11 +37,19 @@ interface FormData {
 
 export default function ApplicationPage() {
   const router = useRouter()
+  const { ssn } = useSsn()
   const searchParams = useSearchParams()
   const stepId = searchParams?.get('step') || formSteps[0].id
   const [activeStepIndex, setActiveStepIndex] = useState(0)
   const [formData, setFormData] = useState<FormData>({})
   const [validationError, setValidationError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!ssn) {
+      router.push('/login')
+      return
+    }
+  }, [ssn, router])
 
   useEffect(() => {
     const index = formSteps.findIndex(step => step.id === stepId)

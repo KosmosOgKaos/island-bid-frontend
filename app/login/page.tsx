@@ -13,13 +13,16 @@ import {
   Stack,
   Input,
   Divider,
+  Logo,
 } from '@island.is/island-ui/core'
 import { useLoginMutation } from '@/lib/graphql'
+import { useSsn } from '../context/SsnContext'
 
 export default function LoginPage() {
   const router = useRouter()
   const [phoneNumber, setPhoneNumber] = useState('')
   const [loginMutation] = useLoginMutation()
+  const { setSsn } = useSsn()
 
   const handleLogin = async () => {
     try {
@@ -29,6 +32,7 @@ export default function LoginPage() {
         },
       })
       if (result.data?.login.success) {
+        setSsn(result.data.login.ssn)
         router.push('/application')
       }
     } catch (error) {
@@ -47,11 +51,21 @@ export default function LoginPage() {
             >
               <Box paddingTop={[0, 0, 4]}>
                 <Stack space={4}>
-                  <Box display="flex" justifyContent="center">
+                  <Box display="flex" justifyContent="center" position="relative">
+                    <Box 
+                      position="absolute" 
+                      style={{ top: '-3px', zIndex: 10 }}
+                      background="white" 
+                      padding={2}
+                      borderRadius="large"
+                    >
+                      <Logo width={48} iconOnly />
+                    </Box>
                     <Box
                       borderRadius="large"
                       padding={6}
                       marginY={4}
+                      paddingTop={8}
                       borderWidth="standard"
                       borderColor="blue200"
                       borderStyle="solid"

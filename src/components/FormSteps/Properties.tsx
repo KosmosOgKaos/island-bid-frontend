@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React from 'react'
 import {
   Box,
   GridColumn,
@@ -10,7 +10,7 @@ import {
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
 import { CurrencyInput } from '@/components/CurrencyInput'
-import { PropertyItem, defaultPropertiesData } from '@/constants/propertiesData'
+import { PropertyItem } from '@/lib/types'
 
 interface FormProps {
   data: {
@@ -25,18 +25,8 @@ interface FormProps {
 export const Properties = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
 
-  useEffect(() => {
-    if (!data.properties) {
-      onChange({
-        target: {
-          name: 'properties',
-          value: defaultPropertiesData,
-        },
-      } as unknown as React.ChangeEvent<HTMLInputElement>)
-    }
-  }, [data.properties, onChange])
-
-  const propertiesData = data.properties || defaultPropertiesData
+  // Use properties data if available, otherwise use empty array
+  const propertiesData = data.properties || []
 
   const findPropertyIndex = (property: PropertyItem): number => {
     return propertiesData.findIndex(p => {
@@ -45,69 +35,58 @@ export const Properties = ({ form }: { form: FormProps }) => {
           p.type === 'DomesticProperty' &&
           p.properties.fastanumer === property.properties.fastanumer
         )
-      } else if (property.type === 'Vehicle') {
+      }
+      if (property.type === 'Vehicle') {
         return (
           p.type === 'Vehicle' &&
           p.properties.registrationNumber ===
             property.properties.registrationNumber
         )
       }
-      return p.createdAt === property.createdAt
+      return false
     })
   }
 
-  const handlePropertyValueChange = (property: PropertyItem, value: string) => {
-    const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'))
-    const index = findPropertyIndex(property)
+  const handlePropertyChange = (
+    property: PropertyItem,
+    field: string,
+    value: string | number
+  ) => {
+    const updatedPropertiesData = [...propertiesData]
+    const propertyIndex = findPropertyIndex(property)
 
-    if (index === -1) return
+    if (propertyIndex >= 0) {
+      if (field === 'value') {
+        const numericValue =
+          typeof value === 'string'
+            ? parseFloat(value.replace(/\./g, '').replace(',', '.'))
+            : value
 
-    const updatedProperties = propertiesData.map((p, i) =>
-      i === index ? { ...p, value: isNaN(numericValue) ? 0 : numericValue } : p
-    )
-
-    onChange({
-      target: {
-        name: 'properties',
-        value: updatedProperties,
-      },
-    } as unknown as React.ChangeEvent<HTMLInputElement>)
-  }
-
-  const groupedProperties = useMemo(() => {
-    const grouped = {
-      DomesticProperty: [] as PropertyItem[],
-      Vehicle: [] as PropertyItem[],
-    }
-
-    propertiesData.forEach(property => {
-      if (property.type === 'DomesticProperty') {
-        grouped.DomesticProperty.push(property)
-      } else if (property.type === 'Vehicle') {
-        grouped.Vehicle.push(property)
+        updatedPropertiesData[propertyIndex] = {
+          ...updatedPropertiesData[propertyIndex],
+          value: isNaN(numericValue) ? 0 : numericValue,
+        }
+      } else {
+        updatedPropertiesData[propertyIndex] = {
+          ...updatedPropertiesData[propertyIndex],
+          [field]: value,
+        }
       }
-    })
 
-    return grouped
-  }, [propertiesData])
-
-  const totals = useMemo(() => {
-    const domesticTotal = groupedProperties.DomesticProperty.reduce(
-      (sum, property) => sum + property.value,
-      0
-    )
-
-    const vehicleTotal = groupedProperties.Vehicle.reduce(
-      (sum, property) => sum + property.value,
-      0
-    )
-
-    return {
-      domesticTotal,
-      vehicleTotal,
-      grandTotal: domesticTotal + vehicleTotal,
+      onChange({
+        target: {
+          name: 'properties',
+          value: updatedPropertiesData,
+        },
+      } as unknown as React.ChangeEvent<HTMLInputElement>)
     }
-  }, [groupedProperties])
+  }
+
+  // Total combined value of all properties
+  const totalPropertyValue = propertiesData.reduce(
+    (total, property) => total + property.value,
+    0
+  )
 
   return (
     <Box>
@@ -115,152 +94,139 @@ export const Properties = ({ form }: { form: FormProps }) => {
         Eignir ársins 2024
       </Text>
       <Text marginBottom={5}>
-        Vinsamlegast fylltu út eignir þínar. Lorem ipsum dolor sit amet
-        consectetur adipisicing elit. Cumque optio necessitatibus omnis.
+        Vinsamlegast staðfestu eignirnar þínar og uppfærðu matsverð ef þörf er
+        á.
       </Text>
 
-      <Stack space={7}>
-        <Box>
-          <Box display="flex">
-            <Box marginRight={1}>
-              <Text variant="h3">Fasteignir á Íslandi</Text>
-            </Box>
-            <Tag>4.1</Tag>
-          </Box>
-          <Text marginBottom={3}>Fasteignir sem eru skráðar á þitt nafn.</Text>
+      {propertiesData.length === 0 ? (
+        <Text>Engar eignir fundust.</Text>
+      ) : (
+        <Stack space={7}>
+          {/* Domestic Properties Section */}
+          {propertiesData.filter(p => p.type === 'DomesticProperty').length >
+            0 && (
+            <Box>
+              <Box display="flex">
+                <Box marginRight={1}>
+                  <Text variant="h3" marginBottom={2}>
+                    Fasteignir
+                  </Text>
+                </Box>
+                <Tag>4.1</Tag>
+              </Box>
 
-          {groupedProperties.DomesticProperty.map((property, index) => (
-            <Box key={`property-${index}`}>
-              <GridRow>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <Input
-                    name={`property-${index}-fastanumer`}
-                    label="Fastanúmer"
-                    value={property.properties.fastanumer}
-                    type="text"
-                    readOnly
-                  />
-                </GridColumn>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <Input
-                    name={`property-${index}-address`}
-                    label="Heimilisfang"
-                    value={property.properties.address}
-                    type="text"
-                    readOnly
-                  />
-                </GridColumn>
-              </GridRow>
-              <GridRow>
-                <GridColumn span="12/12">
-                  <CurrencyInput
-                    name={`property-${index}-value`}
-                    label={property.valueName}
-                    value={formatIcelandicAmount(property.value)}
-                    onChange={value =>
-                      handlePropertyValueChange(property, value)
-                    }
-                    backgroundColor="blue"
-                  />
-                </GridColumn>
-              </GridRow>
+              {propertiesData
+                .filter(property => property.type === 'DomesticProperty')
+                .map((property, index) => (
+                  <Box key={`domestic-${index}`}>
+                    <GridRow>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <Input
+                          label="Fastanúmer"
+                          name="fastanumer"
+                          value={property.properties.fastanumer || ''}
+                          backgroundColor="blue"
+                          readOnly
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <Input
+                          label="Heimilisfang"
+                          name="address"
+                          value={property.properties.address || ''}
+                          backgroundColor="blue"
+                          readOnly
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '12/12']}>
+                        <CurrencyInput
+                          label="Fasteignamat"
+                          name="value"
+                          value={formatIcelandicAmount(property.value)}
+                          onChange={value =>
+                            handlePropertyChange(property, 'value', value)
+                          }
+                          backgroundColor="blue"
+                        />
+                      </GridColumn>
+                    </GridRow>
+                  </Box>
+                ))}
             </Box>
-          ))}
+          )}
 
-          <Box marginTop={3}>
+          {/* Vehicles Section */}
+          {propertiesData.filter(p => p.type === 'Vehicle').length > 0 && (
+            <Box>
+              <Box display="flex">
+                <Box marginRight={1}>
+                  <Text variant="h3" marginBottom={2}>
+                    Bifreiðir
+                  </Text>
+                </Box>
+                <Tag>4.2</Tag>
+              </Box>
+
+              {propertiesData
+                .filter(property => property.type === 'Vehicle')
+                .map((property, index) => (
+                  <Box key={`vehicle-${index}`}>
+                    <GridRow>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <Input
+                          label="Skráningarnúmer"
+                          name="registrationNumber"
+                          value={property.properties.registrationNumber || ''}
+                          backgroundColor="blue"
+                          readOnly
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
+                        <Input
+                          label="Árgerð"
+                          name="yearOfPurchase"
+                          value={property.properties.yearOfPurchase || ''}
+                          backgroundColor="blue"
+                          readOnly
+                        />
+                      </GridColumn>
+                      <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+                        <CurrencyInput
+                          label="Kaupverð"
+                          name="value"
+                          value={formatIcelandicAmount(property.value)}
+                          onChange={value =>
+                            handlePropertyChange(property, 'value', value)
+                          }
+                          backgroundColor="blue"
+                        />
+                      </GridColumn>
+                    </GridRow>
+                  </Box>
+                ))}
+            </Box>
+          )}
+
+          {/* Grand Total Section */}
+          <Box>
+            <Text variant="h3" marginBottom={2}>
+              Heildareignir
+            </Text>
             <GridRow>
-              <GridColumn span="12/12">
+              <GridColumn span={['12/12', '12/12']}>
                 <Input
-                  name="domestic-property-total"
-                  label="Samtals"
-                  value={formatIcelandicAmount(totals.domesticTotal)}
+                  name="income-grand-total"
+                  label="Samanlagðar heildartekjur"
+                  value={formatIcelandicAmount(totalPropertyValue)}
                   type="text"
                   readOnly
+                  backgroundColor="blue"
                 />
               </GridColumn>
             </GridRow>
           </Box>
-        </Box>
-
-        <Box>
-          <Box display="flex">
-            <Box marginRight={1}>
-              <Text variant="h3">Bifreiðir</Text>
-            </Box>
-            <Tag>4.2</Tag>
-          </Box>
-          <Text marginBottom={3}>
-            Bifreiðar, bifhjól og önnur skráningarskyld ökutæki.
-          </Text>
-
-          {groupedProperties.Vehicle.map((property, index) => (
-            <Box key={`vehicle-${index}`}>
-              <GridRow>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <Input
-                    name={`vehicle-${index}-registration`}
-                    label="Skráningarnúmer"
-                    value={property.properties.registrationNumber}
-                    type="text"
-                    readOnly
-                  />
-                </GridColumn>
-                <GridColumn span={['12/12', '6/12']} paddingBottom={3}>
-                  <Input
-                    name={`vehicle-${index}-year`}
-                    label="Kaupdagur"
-                    value={property.properties.yearOfPurchase?.toString()}
-                    type="text"
-                    readOnly
-                  />
-                </GridColumn>
-              </GridRow>
-              <GridRow>
-                <GridColumn span="12/12" paddingBottom={3}>
-                  <CurrencyInput
-                    name={`vehicle-${index}-value`}
-                    label={property.valueName}
-                    value={formatIcelandicAmount(property.value)}
-                    onChange={value =>
-                      handlePropertyValueChange(property, value)
-                    }
-                    backgroundColor="blue"
-                  />
-                </GridColumn>
-              </GridRow>
-            </Box>
-          ))}
-
-          <GridRow>
-            <GridColumn span="12/12">
-              <Input
-                name="vehicle-total"
-                label="Samtals"
-                value={formatIcelandicAmount(totals.vehicleTotal)}
-                type="text"
-                readOnly
-              />
-            </GridColumn>
-          </GridRow>
-        </Box>
-
-        <Box>
-          <Text variant="h3" marginBottom={2}>
-            Heildareignir
-          </Text>
-          <GridRow>
-            <GridColumn span="12/12">
-              <Input
-                name="property-grand-total"
-                label="Samanlagðir heildareignir"
-                value={formatIcelandicAmount(totals.grandTotal)}
-                type="text"
-                readOnly
-              />
-            </GridColumn>
-          </GridRow>
-        </Box>
-      </Stack>
+        </Stack>
+      )}
     </Box>
   )
 }

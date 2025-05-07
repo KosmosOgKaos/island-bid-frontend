@@ -1,24 +1,42 @@
 import React from 'react'
-import {
-  Box,
-  Checkbox,
-  Icon,
-  Text,
-} from '@island.is/island-ui/core'
+import { Box, Text, Checkbox, Icon } from '@island.is/island-ui/core'
+import { useTaxData } from '@/hooks/useTaxData'
 
 interface FormProps {
   data: {
     consent?: boolean
     [key: string]: unknown
   }
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void
 }
 
-export const DataCollection = ({ form }: {
-  form: FormProps
-}) => {
+export const DataCollection = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
-  
+  const { fetchTaxData } = useTaxData({
+    onChange,
+  })
+
+  const handleConsentChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { checked } = e.target
+
+    // Update consent state
+    onChange({
+      target: {
+        name: 'consent',
+        value: checked,
+      },
+    } as unknown as React.ChangeEvent<HTMLInputElement>)
+
+    // Fetch tax data if consent is given
+    if (checked) {
+      fetchTaxData()
+    }
+  }
+
   return (
     <Box>
       <Text variant="h2" marginBottom={3}>
@@ -48,15 +66,16 @@ export const DataCollection = ({ form }: {
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
       </Text>
 
-      <Box marginBottom={7} marginTop={10}>
+      <Box marginBottom={7} marginTop={4}>
         <Checkbox
-          label="Ég samþykki að gögn verði sótt rafrænt"
           name="consent"
-          value="consent"
-          large
+          id="consent"
+          label="Ég samþykki að gögn verði sótt rafrænt"
           checked={data.consent || false}
-          onChange={onChange}
           backgroundColor="blue"
+
+          onChange={handleConsentChange}
+          large
         />
       </Box>
     </Box>
