@@ -1,12 +1,14 @@
 import React from 'react'
 import {
   Box,
+  Button,
   GridColumn,
   GridRow,
   Input,
   Stack,
   Tag,
   Text,
+  Tooltip,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
 import { CurrencyInput } from '@/components/CurrencyInput'
@@ -152,7 +154,16 @@ export const Properties = ({ form }: { form: FormProps }) => {
                     </GridRow>
                   </Box>
                 ))}
-                
+              <GridRow marginBottom={3}>
+                <GridColumn span={['12/12', '12/12']}>
+                  <Button variant="text" size="small">
+                    Bæta við fasteign
+                    <Box marginLeft={1} display="inlineBlock">
+                      <Tooltip text="Bídd'aeins, við erum að vinna í 'essu." />
+                    </Box>
+                  </Button>
+                </GridColumn>
+              </GridRow>
               <GridRow>
                 <GridColumn span={['12/12', '12/12']}>
                   <Input
@@ -160,7 +171,9 @@ export const Properties = ({ form }: { form: FormProps }) => {
                     label="Samtals innlendar fasteignir"
                     value={formatIcelandicAmount(
                       propertiesData
-                        .filter(property => property.type === 'DomesticProperty')
+                        .filter(
+                          property => property.type === 'DomesticProperty'
+                        )
                         .reduce((sum, property) => sum + property.value, 0)
                     )}
                     type="text"
@@ -227,8 +240,17 @@ export const Properties = ({ form }: { form: FormProps }) => {
                     </GridRow>
                   </Box>
                 ))}
-                
-              {/* Vehicles Total Section */}
+
+              <GridRow marginBottom={3}>
+                <GridColumn span={['12/12', '12/12']}>
+                  <Button variant="text" size="small">
+                    Bæta við bifreið
+                    <Box marginLeft={1} display="inlineBlock">
+                      <Tooltip text="Bídd'aeins, við erum að vinna í 'essu." />
+                    </Box>
+                  </Button>
+                </GridColumn>
+              </GridRow>
               <GridRow>
                 <GridColumn span={['12/12', '12/12']}>
                   <Input
@@ -237,7 +259,10 @@ export const Properties = ({ form }: { form: FormProps }) => {
                     value={formatIcelandicAmount(
                       propertiesData
                         .filter(property => property.type === 'Vehicle')
-                        .reduce((sum, property) => sum + (property.value || 0), 0)
+                        .reduce(
+                          (sum, property) => sum + (property.value || 0),
+                          0
+                        )
                     )}
                     type="text"
                     readOnly
