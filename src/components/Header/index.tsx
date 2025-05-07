@@ -24,6 +24,7 @@ interface HeaderProps {
     description: string
   }
   userAsDropdown?: boolean
+  onLogout?: () => void
 }
 
 export const Header = ({
@@ -31,6 +32,7 @@ export const Header = ({
   userName,
   info,
   userAsDropdown,
+  onLogout
 }: HeaderProps) => {
   if (authenticated || userName || info) {
     return (
@@ -39,11 +41,13 @@ export const Header = ({
         userName={userName}
         info={info}
         userAsDropdown={userAsDropdown}
+        onLogout={onLogout}
         logoRender={(defaultLogo: React.ReactNode) => (
           <NextLink href="/" style={{ cursor: 'pointer' }}>
             {defaultLogo}
           </NextLink>
         )}
+        
       />
     )
   }

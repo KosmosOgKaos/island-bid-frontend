@@ -40,7 +40,7 @@ interface FormData {
 
 export default function ApplicationPage() {
   const router = useRouter()
-  const { ssn } = useSsn()
+  const { ssn, setSsn } = useSsn()
   const searchParams = useSearchParams()
   const stepId = searchParams?.get('step') || formSteps[0].id
   const [activeStepIndex, setActiveStepIndex] = useState(0)
@@ -273,6 +273,10 @@ export default function ApplicationPage() {
         <GridContainer>
           <Header
             authenticated={true}
+            onLogout={() => {
+              setSsn('')
+              router.push('/')
+            }}
             userName="Jökull Þórðarson"
             info={{
               title: 'Skatturinn',
