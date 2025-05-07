@@ -18,10 +18,23 @@ import {
 import { ApolloWrapper } from '@/components/ApolloWrapper'
 import Header from '../src/components/Header'
 import Footer from '../src/components/Footer'
+import { useRouter } from 'next/navigation'
+import { useSsn } from './context/SsnContext'
 
 import taxLogo from '../assets/taxLogo.png'
 
 export default function Home() {
+  const router = useRouter()
+  const { ssn } = useSsn()
+
+  const handleStartApplication = () => {
+    if (ssn) {
+      router.push('/application')
+    } else {
+      router.push('/login')
+    }
+  }
+
   return (
     <ApolloWrapper>
       <Page>
@@ -133,11 +146,9 @@ export default function Home() {
                             Skila skattframtali fyrir 2024
                           </Text>
                         </Box>
-                        <Link href="/login" skipTab>
-                          <Button icon="open" iconType="outline" nowrap>
-                            Hefja skattframtal
-                          </Button>
-                        </Link>
+                        <Button icon="open" iconType="outline" nowrap onClick={handleStartApplication}>
+                          Hefja skattframtal
+                        </Button>
                       </Box>
 
                       <Box>
