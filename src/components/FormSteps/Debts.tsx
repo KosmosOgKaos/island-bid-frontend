@@ -92,7 +92,7 @@ export const Debts = ({ form }: { form: FormProps }) => {
               <Box display="flex">
                 <Box marginRight={1}>
                   <Text variant="h3" marginBottom={2}>
-                    5.1 Vaxtagjöld vegna íbúðarhúsnæðis til eigin nota
+                    Vaxtagjöld vegna íbúðarhúsnæðis til eigin nota
                   </Text>
                 </Box>
                 <Tag>5.1</Tag>
