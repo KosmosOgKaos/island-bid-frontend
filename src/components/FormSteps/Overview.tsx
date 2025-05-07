@@ -14,16 +14,11 @@ import { DebtItem } from '@/lib/types'
 import { PropertyItem } from '@/lib/types'
 import { IncomeItem } from '@/lib/types'
 import { useRouter } from 'next/navigation'
+import { Person } from '@/lib/types'
 
 interface FormProps {
   data: {
-    person?: {
-      name: string
-      kennitala: string
-      email: string
-      telephone: string
-      address: string
-    }
+    person?: Person
     properties?: PropertyItem[]
     debts?: DebtItem[]
     incomes?: IncomeItem[]
@@ -113,7 +108,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
               <FieldItem label="Nafn" value={data?.person?.name} />
             </GridColumn>
             <GridColumn span={['12/12', '6/12']}>
-              <FieldItem label="Kennitala" value={data?.person?.kennitala} />
+              <FieldItem label="Kennitala" value={data?.person?.ssn} />
             </GridColumn>
           </GridRow>
           <GridRow>
