@@ -8,8 +8,10 @@ import {
   Tag,
   Divider,
   Button,
+  Icon,
 } from '@island.is/island-ui/core'
 import { formatIcelandicAmount } from '@/utils/numberUtils'
+import { formatIcelandicDate } from '@/utils/dateUtils'
 import { DebtItem } from '@/lib/types'
 import { PropertyItem } from '@/lib/types'
 import { IncomeItem } from '@/lib/types'
@@ -65,6 +67,9 @@ export const Overview = ({ form }: { form: FormProps }) => {
             onClick={() => router.push(`/application?step=${stepId}`)}
           >
             Breyta
+            <Box marginLeft={1} display="inlineBlock">
+              <Icon icon="pencil" size="small" />
+            </Box>
           </Button>
         </Box>
       </Box>
@@ -626,7 +631,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                           >
                             <FieldItem
                               label="Lántökudagur"
-                              value={debt.loanStartDate}
+                              value={formatIcelandicDate(debt.loanStartDate)}
                             />
                           </GridColumn>
                         </GridRow>

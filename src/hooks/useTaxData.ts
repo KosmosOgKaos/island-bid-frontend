@@ -48,21 +48,10 @@ export const useTaxData = ({
               }
             }
 
-            // Merge debts
-            taxData.debts = taxData.debts?.map(debt => {
-              const storedDebt = parsedStoredTaxData.debts?.find(
-                (stored: typeof debt) => stored.id === debt.id
-              )
-              return storedDebt || debt
-            })
-
-            // Merge incomes
-            taxData.incomes = taxData.incomes?.map(income => {
-              const storedIncome = parsedStoredTaxData.incomes?.find(
-                (stored: typeof income) => stored.id === income.id
-              )
-              return storedIncome || income
-            })
+            // Simply use stored incomes if they exist
+            if (parsedStoredTaxData.incomes) {
+              taxData.incomes = parsedStoredTaxData.incomes
+            }
 
             // Merge properties
             taxData.properties = taxData.properties?.map(property => {
@@ -70,6 +59,14 @@ export const useTaxData = ({
                 (stored: typeof property) => stored.id === property.id
               )
               return storedProperty || property
+            })
+
+            // Merge debts
+            taxData.debts = taxData.debts?.map(debt => {
+              const storedDebt = parsedStoredTaxData.debts?.find(
+                (stored: typeof debt) => stored.id === debt.id
+              )
+              return storedDebt || debt
             })
           }
 

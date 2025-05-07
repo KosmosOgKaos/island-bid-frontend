@@ -23,7 +23,7 @@ export default function LoginPage() {
   const router = useRouter()
   const [phoneNumber, setPhoneNumber] = useState('')
   const [loginError, setLoginError] = useState(false)
-  const [loginMutation] = useLoginMutation()
+  const [loginMutation, { loading }] = useLoginMutation()
   const { setSsn } = useSsn()
 
   const handleLogin = async () => {
@@ -35,7 +35,7 @@ export default function LoginPage() {
         },
       })
       if (result.data?.login.success) {
-        setSsn(result.data.login.ssn)
+        setSsn(result.data.login.ssn || '')
         router.push('/application')
       } else {
         setLoginError(true)
@@ -120,16 +120,17 @@ export default function LoginPage() {
                             fluid
                             data-testid="authentication-login-button"
                             disabled={!phoneNumber || phoneNumber.length < 7}
+                            loading={loading}
                           >
                             Auðkenna
                           </Button>
                         </Box>
                         {loginError && (
-                          <ErrorMessage>
-                            <Text dataTestId="authentication-failure-text">
+                          <Box marginTop={2}>
+                            <ErrorMessage dataTestId="authentication-failure-text">
                               Ekki tókst að auðkenna
-                            </Text>
-                          </ErrorMessage>
+                            </ErrorMessage>
+                          </Box>
                         )}
 
                         <Box
