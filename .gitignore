@@ -42,3 +42,10 @@ next-env.d.ts
 
 #graphql
 src/lib/graphql.ts
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
