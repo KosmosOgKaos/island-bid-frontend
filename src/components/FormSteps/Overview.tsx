@@ -293,12 +293,6 @@ export const Overview = ({ form }: { form: FormProps }) => {
                     .map((item, index) => (
                       <Box key={`other-income-${index}`}>
                         <GridRow>
-                          <GridColumn span="6/12" paddingBottom={2}>
-                            <FieldItem label="Tegund" value={item.type} />
-                          </GridColumn>
-                        </GridRow>
-
-                        <GridRow>
                           <GridColumn
                             span={['12/12', '6/12']}
                             paddingBottom={2}
