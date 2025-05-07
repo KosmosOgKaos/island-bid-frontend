@@ -172,7 +172,7 @@ export default function ApplicationPage() {
       if (!ssn) {
         return
       }
-      
+
       // Transform the data to match CreateSubmissionInput type
       const transformedData = {
         incomes: (formData.incomes || []).map((income: IncomeItem) => ({
@@ -180,15 +180,17 @@ export default function ApplicationPage() {
           payer: income.payer,
           amount: income.amount,
           currency: income.currency,
-          explanation: income.explanation
+          explanation: income.explanation,
         })),
-        properties: (formData.properties || []).map((property: PropertyItem) => ({
-          type: property.type,
-          valueName: property.valueName,
-          value: property.value,
-          currency: property.currency,
-          properties: property.properties
-        })),
+        properties: (formData.properties || []).map(
+          (property: PropertyItem) => ({
+            type: property.type,
+            valueName: property.valueName,
+            value: property.value,
+            currency: property.currency,
+            properties: property.properties,
+          })
+        ),
         debts: (formData.debts || []).map((debt: DebtItem) => ({
           type: debt.type,
           description: debt.description,
@@ -202,14 +204,14 @@ export default function ApplicationPage() {
           nominalPaymentTotal: debt.nominalPaymentTotal,
           interestPaymentTotal: debt.interestPaymentTotal,
           remaining: debt.remaining,
-          properties: debt.properties
-        }))
+          properties: debt.properties,
+        })),
       }
 
       await createSubmission({
         variables: {
           ssn,
-          input: transformedData
+          input: transformedData,
         },
       })
     } catch (error) {
@@ -250,11 +252,7 @@ export default function ApplicationPage() {
         />
 
         {validationError && (
-          <AlertMessage
-            type="error"
-            title=""
-            message={validationError}
-          />
+          <AlertMessage type="error" title="" message={validationError} />
         )}
 
         <Box

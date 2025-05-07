@@ -32,7 +32,7 @@ export const Header = ({
   userName,
   info,
   userAsDropdown,
-  onLogout
+  onLogout,
 }: HeaderProps) => {
   if (authenticated || userName || info) {
     return (
@@ -47,7 +47,6 @@ export const Header = ({
             {defaultLogo}
           </NextLink>
         )}
-        
       />
     )
   }

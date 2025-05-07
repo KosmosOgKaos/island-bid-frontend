@@ -27,7 +27,7 @@ export default function LoginPage() {
   const { setSsn } = useSsn()
 
   const handleLogin = async () => {
-    try {      
+    try {
       setLoginError(false)
       const result = await loginMutation({
         variables: {
@@ -101,7 +101,10 @@ export default function LoginPage() {
                             placeholder="000-0000"
                             value={phoneNumber}
                             onChange={e => {
-                              const value = e.target.value.replace(/[^0-9]/g, '')
+                              const value = e.target.value.replace(
+                                /[^0-9]/g,
+                                ''
+                              )
                               if (value.length <= 7) {
                                 setPhoneNumber(value)
                               }
