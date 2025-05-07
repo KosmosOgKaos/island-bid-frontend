@@ -4,6 +4,7 @@ export const getLatestTaxReturnInfo = graphql(`
   query GetLatestTaxReturnInfo($input: TaxReturnInfoInput!) {
     getLatestTaxReturnInfo(input: $input) {
       debts {
+        id
         creditor
         creditorSsn
         currency
@@ -20,6 +21,7 @@ export const getLatestTaxReturnInfo = graphql(`
       }
 
       incomes {
+        id
         amount
         currency
         explanation
@@ -36,6 +38,7 @@ export const getLatestTaxReturnInfo = graphql(`
       }
 
       properties {
+        id
         currency
         properties
         type

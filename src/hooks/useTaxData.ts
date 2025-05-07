@@ -51,8 +51,45 @@ export const useTaxData = ({
         setIsLoading(false)
 
         if (response && response.getLatestTaxReturnInfo) {
-          const taxData = response.getLatestTaxReturnInfo
+          let taxData = response.getLatestTaxReturnInfo
+          const storedTaxData = localStorage.getItem('taxData')
+          const parsedStoredTaxData = storedTaxData ? JSON.parse(storedTaxData) : null
+          
+          // Merge stored data with new data if available
+          if (parsedStoredTaxData) {
+            // Merge person data if it exists in stored data
+            if (parsedStoredTaxData.person) {
+              taxData = {
+                ...taxData,
+                person: parsedStoredTaxData.person
+              }
+            }
 
+            // Merge debts
+            taxData.debts = taxData.debts?.map(debt => {
+              const storedDebt = parsedStoredTaxData.debts?.find(
+                (stored: typeof debt) => stored.id === debt.id
+              )
+              return storedDebt || debt
+            })
+
+            // Merge incomes
+            taxData.incomes = taxData.incomes?.map(income => {
+              const storedIncome = parsedStoredTaxData.incomes?.find(
+                (stored: typeof income) => stored.id === income.id
+              )
+              return storedIncome || income
+            })
+
+            // Merge properties
+            taxData.properties = taxData.properties?.map(property => {
+              const storedProperty = parsedStoredTaxData.properties?.find(
+                (stored: typeof property) => stored.id === property.id
+              )
+              return storedProperty || property
+            })
+          }
+          
           localStorage.setItem('taxData', JSON.stringify(mapTaxData(taxData)))
 
           onChange({
