@@ -111,7 +111,12 @@ export default function Home() {
                             </Text>
                           </Box>
                           <Link href="/login" skipTab>
-                            <Button icon="open" iconType="outline" nowrap>
+                            <Button
+                              icon="open"
+                              iconType="outline"
+                              data-testid="application-apply-button"
+                              nowrap
+                            >
                               Sækja um
                             </Button>
                           </Link>
