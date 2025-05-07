@@ -14,6 +14,7 @@ import {
   Input,
   Divider,
   Logo,
+  ErrorMessage,
 } from '@island.is/island-ui/core'
 import { useLoginMutation } from '@/lib/graphql'
 import { useSsn } from '../context/SsnContext'
@@ -21,11 +22,13 @@ import { useSsn } from '../context/SsnContext'
 export default function LoginPage() {
   const router = useRouter()
   const [phoneNumber, setPhoneNumber] = useState('')
+  const [loginError, setLoginError] = useState(false)
   const [loginMutation] = useLoginMutation()
   const { setSsn } = useSsn()
 
   const handleLogin = async () => {
     try {
+      setLoginError(false)
       const result = await loginMutation({
         variables: {
           phoneNumber,
@@ -34,9 +37,12 @@ export default function LoginPage() {
       if (result.data?.login.success) {
         setSsn(result.data.login.ssn)
         router.push('/application')
+      } else {
+        setLoginError(true)
       }
     } catch (error) {
       console.error('Login failed:', error)
+      setLoginError(true)
     }
   }
 
@@ -89,9 +95,15 @@ export default function LoginPage() {
                           label="Símanúmer"
                           placeholder="000-0000"
                           value={phoneNumber}
-                          onChange={e => setPhoneNumber(e.target.value)}
+                          onChange={e => {
+                            const value = e.target.value.replace(/[^0-9]/g, '')
+                            if (value.length <= 7) {
+                              setPhoneNumber(value)
+                            }
+                          }}
                           type="tel"
                           backgroundColor="blue"
+                          maxLength={7}
                         />
                       </Box>
                       <Box width="full">
@@ -104,6 +116,12 @@ export default function LoginPage() {
                           Auðkenna
                         </Button>
                       </Box>
+                      
+                      {loginError && (
+                        <ErrorMessage>
+                          <Text>Ekki tókst að auðkenna</Text>
+                        </ErrorMessage>
+                      )}
 
                       <Box
                         width="full"

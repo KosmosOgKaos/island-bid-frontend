@@ -5,6 +5,7 @@ export const login = graphql(`
     login(input: {phoneNumber: $phoneNumber}) {
       success
       ssn
+      error
     }
   }
 `)
