@@ -1,6 +1,6 @@
 export interface Person {
   name: string
-  kennitala: string
+  ssn: string
   address: string
   email: string
   telephone: string

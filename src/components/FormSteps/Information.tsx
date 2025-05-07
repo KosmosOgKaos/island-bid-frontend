@@ -23,7 +23,7 @@ export const Information = ({ form }: { form: FormProps }) => {
 
   const person = data.person || {
     name: '',
-    kennitala: '',
+    ssn: '',
     address: '',
     email: '',
     telephone: '',
@@ -101,7 +101,7 @@ export const Information = ({ form }: { form: FormProps }) => {
           <Input
             label="Kennitala"
             name="kennitala"
-            value={person.kennitala}
+            value={person.ssn}
             readOnly
           />
         </GridColumn>

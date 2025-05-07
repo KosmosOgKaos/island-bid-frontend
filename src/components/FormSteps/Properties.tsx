@@ -138,7 +138,7 @@ export const Properties = ({ form }: { form: FormProps }) => {
                           readOnly
                         />
                       </GridColumn>
-                      <GridColumn span={['12/12', '12/12']} paddingBottom={3}>
+                      <GridColumn span={['12/12', '12/12']}>
                         <CurrencyInput
                           label="Fasteignamat"
                           name="value"

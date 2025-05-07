@@ -2,7 +2,7 @@ import type { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: 'http://bidtaxapplicati-encmfsmv-751978075.eu-west-2.elb.amazonaws.com/graphql',
+  schema: process.env.GRAPHQL_URL ?? 'http://bidtaxapplicati-encmfsmv-751978075.eu-west-2.elb.amazonaws.com/graphql',
   documents: 'src/lib/queries/*.ts',
   ignoreNoDocuments: true,
   generates: {
