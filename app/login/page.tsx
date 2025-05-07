@@ -45,10 +45,8 @@ export default function LoginPage() {
       <GridContainer>
         <Box paddingY={[3, 3, 6]}>
           <GridRow>
-            <GridColumn
-              offset={['0', '0', '0', '0', '2/12']}
-              span={['12/12', '12/12', '10/12', '8/12', '8/12']}
-            >
+            <GridColumn span="12/12">
+              <Box display="flex" justifyContent="center">
               <Box paddingTop={[0, 0, 4]}>
                 <Stack space={4}>
                   <Box display="flex" justifyContent="center" position="relative">
@@ -77,7 +75,7 @@ export default function LoginPage() {
                       <Text variant="eyebrow" color="blue400" marginBottom={2}>
                         Rafræn skilríki í síma
                       </Text>
-                      <Text variant="h2" marginBottom={2}>
+                      <Text variant="h2" marginBottom={2} as="h2">
                         Skráðu þig inn
                       </Text>
                       <Text marginBottom={3}>Ísland.is - Mínar síður</Text>
@@ -150,6 +148,7 @@ export default function LoginPage() {
                     </Box>
                   </Box>
                 </Stack>
+              </Box>
               </Box>
             </GridColumn>
           </GridRow>

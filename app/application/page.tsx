@@ -289,8 +289,8 @@ export default function ApplicationPage() {
             <Box
               background="white"
               borderRadius="large"
-              paddingTop={[5, 8, 8]}
-              paddingX={[3, 12, 12]}
+              paddingTop={[5, 8]}
+              paddingX={[3, 6, 6, 6, 12]}
               display="flex"
               flexDirection="column"
             >
