@@ -31,9 +31,8 @@ export const useTaxData = ({
     GetLatestTaxReturnInfoDocument,
     {
       onCompleted: response => {
-        
         setIsLoading(false)
-        
+
         if (response && response.getLatestTaxReturnInfo) {
           let taxData = response.getLatestTaxReturnInfo
 
@@ -90,7 +89,6 @@ export const useTaxData = ({
         }
       },
       onError: error => {
-        console.log("onError")
         setFetchError(`Villa kom upp við að sækja gögn: ${error.message}`)
         setIsLoading(false)
       },
