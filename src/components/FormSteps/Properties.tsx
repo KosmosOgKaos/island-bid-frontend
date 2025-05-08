@@ -94,7 +94,12 @@ export const Properties = ({ form }: { form: FormProps }) => {
       <Text variant="h2" as="h2" marginBottom={2}>
         Eignir ársins 2024
       </Text>
-      <Text marginBottom={5}>Vinsamlegast fylltu út eignir ársins.</Text>
+      <Text marginBottom={5}>
+        Skráðu allar eignir sem þú átt í árslok tekjuárs. Þetta nær yfir
+        fasteignir, ökutæki, bankainnistæður, verðbréf og annan sparnað. Eignir
+        eru oft forútfylltar en þú berð ábyrgð á að skrá rétt og leiðrétta ef
+        þarf.
+      </Text>
 
       {propertiesData.length === 0 ? (
         <Text>Engar eignir fundust.</Text>
