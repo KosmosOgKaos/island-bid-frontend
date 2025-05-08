@@ -14,10 +14,22 @@ interface FormProps {
 
 export const DataCollection = ({ form }: { form: FormProps }) => {
   const { data, onChange } = form
-  const { fetchTaxData } = useTaxData({
+  const { fetchTaxData, fetchError } = useTaxData({
     onChange,
   })
-
+  
+  // Update form data with fetch error if tax data fetching fails
+  React.useEffect(() => {
+    if (fetchError) {
+      onChange({
+        target: {
+          name: 'fetchError',
+          value: fetchError
+        }
+      } as unknown as React.ChangeEvent<HTMLInputElement>)
+    }
+  }, [fetchError, onChange])
+  
   const handleConsentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.target
 
