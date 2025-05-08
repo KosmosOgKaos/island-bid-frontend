@@ -269,7 +269,11 @@ export default function ApplicationPage() {
           marginTop={4}
         >
           {currentStep.prev && (
-            <Button onClick={goToPrevStep} variant="ghost">
+            <Button
+              onClick={goToPrevStep}
+              variant="ghost"
+              preTextIcon="arrowBack"
+            >
               Til baka
             </Button>
           )}
@@ -290,7 +294,12 @@ export default function ApplicationPage() {
                     </Box>
                   </Hidden>
                 )}
-                <Button onClick={goToNextStep} icon="arrowForward">
+                <Button
+                  onClick={goToNextStep}
+                  icon={
+                    currentStep.id === 'overview' ? 'checkmark' : 'arrowForward'
+                  }
+                >
                   {currentStep.id === 'overview'
                     ? 'Skila skattframtali'
                     : 'Halda áfram'}
