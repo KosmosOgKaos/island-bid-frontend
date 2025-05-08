@@ -89,7 +89,6 @@ export const Properties = ({ form }: { form: FormProps }) => {
     (total, property) => total + property.value,
     0
   )
-
   return (
     <Box>
       <Text variant="h2" as="h2" marginBottom={2}>
@@ -126,7 +125,7 @@ export const Properties = ({ form }: { form: FormProps }) => {
                         <Input
                           label="Fastanúmer"
                           name="fastanumer"
-                          value={property.properties.fastanumer || ''}
+                          value={property.properties?.fastanumer || ''}
                           backgroundColor="blue"
                           readOnly
                         />
@@ -135,7 +134,7 @@ export const Properties = ({ form }: { form: FormProps }) => {
                         <Input
                           label="Heimilisfang"
                           name="address"
-                          value={property.properties.address || ''}
+                          value={property.properties?.address || ''}
                           backgroundColor="blue"
                           readOnly
                         />
@@ -241,6 +240,7 @@ export const Properties = ({ form }: { form: FormProps }) => {
                   </Box>
                 ))}
 
+              {/* Vehicles Total Section */}
               <GridRow marginBottom={3}>
                 <GridColumn span={['12/12', '12/12']}>
                   <Button variant="text" size="small">
