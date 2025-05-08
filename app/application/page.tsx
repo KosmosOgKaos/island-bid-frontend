@@ -252,7 +252,12 @@ export default function ApplicationPage() {
         />
 
         {validationError && (
-          <AlertMessage type="error" title="" message={validationError} />
+          <AlertMessage
+            type="error"
+            title=""
+            testid="validationErrorMessage"
+            message={validationError}
+          />
         )}
 
         <Box
