@@ -4,6 +4,7 @@ import {
   GetLatestTaxReturnInfoDocument,
   GetLatestTaxReturnInfoQuery,
 } from '@/lib/graphql'
+import { useSsn } from '../../app/context/SsnContext'
 
 type FormChangeEvent = React.ChangeEvent<HTMLInputElement>
 
@@ -24,6 +25,7 @@ export const useTaxData = ({
   const [isDataFetched, setIsDataFetched] = useState(false)
   const [fetchError, setFetchError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const { ssn } = useSsn()
 
   const [executeQuery] = useLazyQuery<GetLatestTaxReturnInfoQuery>(
     GetLatestTaxReturnInfoDocument,
@@ -33,13 +35,14 @@ export const useTaxData = ({
 
         if (response && response.getLatestTaxReturnInfo) {
           let taxData = response.getLatestTaxReturnInfo
+
           const storedTaxData = localStorage.getItem('taxData')
           const parsedStoredTaxData = storedTaxData
             ? JSON.parse(storedTaxData)
             : null
 
-          // Merge stored data with new data if available
-          if (parsedStoredTaxData) {
+          // Check if stored data exists and SSN matches
+          if (parsedStoredTaxData && parsedStoredTaxData.person?.ssn === ssn) {
             // Merge person data if it exists in stored data
             if (parsedStoredTaxData.person) {
               taxData = {
@@ -80,7 +83,7 @@ export const useTaxData = ({
           } as FormChangeEvent)
 
           setIsDataFetched(true)
-          setFetchError(null)
+          setFetchError(taxData.error ? taxData.error : null)
         } else {
           setFetchError('Engin gögn fundust')
         }
@@ -94,6 +97,11 @@ export const useTaxData = ({
   )
 
   const fetchTaxData = useCallback(() => {
+    if (!ssn) {
+      setFetchError('Kennitala vantar')
+      return
+    }
+
     setIsLoading(true)
     setIsDataFetched(false)
     setFetchError(null)
@@ -101,14 +109,13 @@ export const useTaxData = ({
     executeQuery({
       variables: {
         input: {
-          // TODO: hook up to login when available
-          ssn: '1203894569',
+          ssn,
         },
       },
     }).catch(() => {
       setIsLoading(false)
     })
-  }, [executeQuery])
+  }, [executeQuery, ssn])
 
   return {
     fetchTaxData,
