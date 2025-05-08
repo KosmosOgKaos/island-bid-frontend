@@ -345,7 +345,7 @@ export default function ApplicationPage() {
               setName('')
               router.push('/')
             }}
-            userName={isClient ? (name || '') : ''}
+            userName={isClient && name || ''}
             info={{
               title: 'Skatturinn',
               description: 'Sækja um skattframtal',
