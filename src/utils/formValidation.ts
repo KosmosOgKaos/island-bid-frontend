@@ -30,7 +30,7 @@ export function validateDataCollectionStep(formData: FormData): {
   if (formData.fetchError) {
     return {
       isValid: false,
-      errorMessage: 'Villa kom upp við að sækja gögn.',
+      errorMessage: 'Villa kom upp við að sækja gögn: ' + formData.fetchError,
     }
   }
 

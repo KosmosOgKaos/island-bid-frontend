@@ -31,7 +31,6 @@ export const useTaxData = ({
     GetLatestTaxReturnInfoDocument,
     {
       onCompleted: response => {
-        
         setIsLoading(false)
         
         if (response && response.getLatestTaxReturnInfo) {

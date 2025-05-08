@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Box, Text, Checkbox, Icon } from '@island.is/island-ui/core'
 import { useTaxData } from '@/hooks/useTaxData'
 
@@ -17,20 +17,24 @@ export const DataCollection = ({ form }: { form: FormProps }) => {
   const { fetchTaxData, fetchError } = useTaxData({
     onChange,
   })
-  
+
+  // Helps prevent infinite loops when updating form data with fetch error
+  const lastHandledFetchErrorRef = useRef<string | null>(null)
+
   // Update form data with fetch error if tax data fetching fails
-  React.useEffect(() => {
-    if (fetchError) {
-      console.log("fetchErrorTrigger")
+  useEffect(() => {
+    if (fetchError && fetchError !== lastHandledFetchErrorRef.current) {
+      lastHandledFetchErrorRef.current = fetchError
+
       onChange({
         target: {
           name: 'fetchError',
-          value: fetchError
-        }
+          value: fetchError,
+        },
       } as unknown as React.ChangeEvent<HTMLInputElement>)
     }
   }, [fetchError, onChange])
-  
+
   const handleConsentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { checked } = e.target
 
