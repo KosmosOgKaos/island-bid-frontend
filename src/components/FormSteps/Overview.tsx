@@ -299,7 +299,7 @@ export const Overview = ({ form }: { form: FormProps }) => {
                           >
                             <FieldItem
                               label="Greiðandi"
-                              value={item.payer || ''}
+                              value={item.payer + ', ' + item.explanation || ''}
                             />
                           </GridColumn>
                           <GridColumn
@@ -312,20 +312,8 @@ export const Overview = ({ form }: { form: FormProps }) => {
                             />
                           </GridColumn>
                         </GridRow>
-
-                        {item.explanation && (
-                          <GridRow>
-                            <GridColumn span="6/12" paddingBottom={2}>
-                              <FieldItem
-                                label="Skýring"
-                                value={item.explanation}
-                              />
-                            </GridColumn>
-                          </GridRow>
-                        )}
                       </Box>
                     ))}
-
                   <GridRow>
                     <GridColumn span="6/12">
                       <Text variant="h4" as="h4">

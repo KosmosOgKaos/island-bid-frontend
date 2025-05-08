@@ -82,8 +82,9 @@ export const Debts = ({ form }: { form: FormProps }) => {
         </Text>
       </Box>
       <Text marginBottom={5}>
-        Vinsamlegast fylltu út skuldir og vaxtagjöld. Lorem ipsum dolor sit amet
-        consectetur adipisicing elit. Cumque optio necessitatibus omnis.
+        Skráðu eftirstöðvar skulda í árslok og greidd vaxtagjöld á tekjuárinu.
+        Þetta á m.a. við um húsnæðislán, neyslulán og yfirdrátt. Vaxtagjöld
+        vegna íbúðarlána geta gefið rétt á vaxtabótum.
       </Text>
 
       {debtsData.length === 0 ? (
