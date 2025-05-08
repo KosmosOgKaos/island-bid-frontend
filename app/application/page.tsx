@@ -46,6 +46,12 @@ export default function ApplicationPage() {
   const router = useRouter()
   const { ssn, setSsn } = useSsn()
   const { name, setName } = useName()
+  const [isClient, setIsClient] = useState(false)
+  
+  // To help with hydration error for header
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
   const searchParams = useSearchParams()
   const stepId = searchParams?.get('step') || formSteps[0].id
   const [activeStepIndex, setActiveStepIndex] = useState(0)
@@ -339,7 +345,7 @@ export default function ApplicationPage() {
               setName('')
               router.push('/')
             }}
-            userName={name || ''}
+            userName={isClient && name || ''}
             info={{
               title: 'Skatturinn',
               description: 'Sækja um skattframtal',
