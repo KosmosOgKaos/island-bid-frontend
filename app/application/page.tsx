@@ -230,8 +230,6 @@ export default function ApplicationPage() {
     try {
       // Save current form data to localStorage
       localStorage.setItem('taxData', JSON.stringify(formData))
-
-      // Show success toast notification
       toast.success('Upplýsingar þínar hafa verið vistaðar')
     } catch (error) {
       console.error('Error saving application:', error)

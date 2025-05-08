@@ -26,6 +26,14 @@ export function validateDataCollectionStep(formData: FormData): {
     }
   }
 
+  // Check if a fetch error occurred during tax data fetching
+  if (formData.fetchError) {
+    return {
+      isValid: false,
+      errorMessage: 'Villa kom upp við að sækja gögn.',
+    }
+  }
+
   return { isValid: true }
 }
 

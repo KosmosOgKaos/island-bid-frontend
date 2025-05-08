@@ -71,6 +71,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = ({
       onFocus={handleFocus}
       onBlur={handleBlur}
       type="text"
+      inputMode="numeric"
       disabled={disabled}
       readOnly={readOnly}
     />
