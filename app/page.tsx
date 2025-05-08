@@ -259,7 +259,7 @@ export default function Home() {
                             Fjármunir – bifreiðar, bankainnistæður, hlutabréf,
                             inneign í lífeyrissjóðum
                           </Bullet>
-                          <Bullet>Hvers konar eignaréttind</Bullet>
+                          <Bullet>Hvers konar eignaréttindi</Bullet>
                         </BulletList>
                         <Box marginTop={2}>
                           <Link href="https://www.skatturinn.is/einstaklingar/framtal-og-alagning/eignir-og-skuldir/">

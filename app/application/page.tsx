@@ -269,7 +269,11 @@ export default function ApplicationPage() {
           marginTop={4}
         >
           {currentStep.prev && (
-            <Button onClick={goToPrevStep} variant="ghost">
+            <Button
+              onClick={goToPrevStep}
+              variant="ghost"
+              preTextIcon="arrowBack"
+            >
               Til baka
             </Button>
           )}
@@ -290,7 +294,12 @@ export default function ApplicationPage() {
                     </Box>
                   </Hidden>
                 )}
-                <Button onClick={goToNextStep} icon="arrowForward">
+                <Button
+                  onClick={goToNextStep}
+                  icon={
+                    currentStep.id === 'overview' ? 'checkmark' : 'arrowForward'
+                  }
+                >
                   {currentStep.id === 'overview'
                     ? 'Skila skattframtali'
                     : 'Halda áfram'}
@@ -338,7 +347,7 @@ export default function ApplicationPage() {
         </GridContainer>
       </Box>
       <GridContainer>
-        <GridRow direction={['columnReverse', 'row']}>
+        <GridRow direction={['columnReverse', 'columnReverse', 'row']}>
           <GridColumn span={['12/12', '12/12', '9/12']}>
             <Box
               background="white"
