@@ -21,6 +21,7 @@ import { validateStep } from '@/utils/formValidation'
 import Header from '../../src/components/Header'
 import taxLogo from '../../assets/taxLogo.png'
 import { useSsn } from '../context/SsnContext'
+import { useName } from '../context/NameContext'
 import { useCreateSubmissionMutation } from '@/lib/graphql'
 
 interface TaxData {
@@ -44,6 +45,7 @@ interface FormData {
 export default function ApplicationPage() {
   const router = useRouter()
   const { ssn, setSsn } = useSsn()
+  const { name, setName } = useName()
   const searchParams = useSearchParams()
   const stepId = searchParams?.get('step') || formSteps[0].id
   const [activeStepIndex, setActiveStepIndex] = useState(0)
@@ -334,9 +336,10 @@ export default function ApplicationPage() {
             authenticated={true}
             onLogout={() => {
               setSsn('')
+              setName('')
               router.push('/')
             }}
-            userName="Jökull Þórðarson"
+            userName={name || ''}
             info={{
               title: 'Skatturinn',
               description: 'Sækja um skattframtal',

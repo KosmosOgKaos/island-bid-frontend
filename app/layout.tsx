@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ApolloWrapper } from '@/components/ApolloWrapper'
 import { SsnProvider } from './context/SsnContext'
+import { NameProvider } from './context/NameContext'
 import './globals.css'
 import '../src/lib/island-ui/fonts/fonts.css'
 
@@ -36,7 +37,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ApolloWrapper>
-          <SsnProvider>{children}</SsnProvider>
+          <SsnProvider>
+            <NameProvider>{children}</NameProvider>
+          </SsnProvider>
         </ApolloWrapper>
       </body>
     </html>
