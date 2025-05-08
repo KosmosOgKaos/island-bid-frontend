@@ -82,8 +82,7 @@ export const Debts = ({ form }: { form: FormProps }) => {
         </Text>
       </Box>
       <Text marginBottom={5}>
-        Vinsamlegast fylltu út skuldir og vaxtagjöld. Lorem ipsum dolor sit amet
-        consectetur adipisicing elit. Cumque optio necessitatibus omnis.
+        Vinsamlegast fylltu út skuldir og vaxtagjöld.
       </Text>
 
       {debtsData.length === 0 ? (

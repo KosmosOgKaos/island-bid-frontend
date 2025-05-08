@@ -94,7 +94,7 @@ export const Properties = ({ form }: { form: FormProps }) => {
       <Text variant="h2" as="h2" marginBottom={2}>
         Eignir ársins 2024
       </Text>
-      <Text marginBottom={5}>Upplýsingar um eignir.</Text>
+      <Text marginBottom={5}>Vinsamlegast fylltu út eignir ársins.</Text>
 
       {propertiesData.length === 0 ? (
         <Text>Engar eignir fundust.</Text>
@@ -113,7 +113,7 @@ export const Properties = ({ form }: { form: FormProps }) => {
                 <Tag>4.1</Tag>
               </Box>
               <Text marginBottom={3}>
-                Upplýsingar um þær innlendu fasteignir sem þú átt í árslok
+                Upplýsingar um þær innlendu fasteignir sem þú átt í árslok.
               </Text>
 
               {propertiesData

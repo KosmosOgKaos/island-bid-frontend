@@ -123,9 +123,7 @@ export default function LoginPage() {
                       </Box>
                       {loginError && (
                         <Box marginTop={2}>
-                          <ErrorMessage dataTestId="authentication-failure-text">
-                            Ekki tókst að auðkenna
-                          </ErrorMessage>
+                          <ErrorMessage>Ekki tókst að auðkenna</ErrorMessage>
                         </Box>
                       )}
 
