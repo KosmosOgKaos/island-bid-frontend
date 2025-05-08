@@ -264,7 +264,8 @@ export default function Home() {
                         <Box marginTop={2}>
                           <Link href="https://www.skatturinn.is/einstaklingar/framtal-og-alagning/eignir-og-skuldir/">
                             <Text color="blue400" fontWeight="semiBold">
-                              Kynntu þér eignir og skuldir á Skatturinn.is.
+                              Kynntu þér hvað telst til eigna og skulda á
+                              Skatturinn.is.
                             </Text>
                           </Link>
                         </Box>
