@@ -45,6 +45,7 @@ export const getLatestTaxReturnInfo = graphql(`
         value
         valueName
       }
+      error
     }
   }
 `)
