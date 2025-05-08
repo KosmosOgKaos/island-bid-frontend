@@ -40,11 +40,11 @@ export const Footer = () => {
           <GridColumn span={['12/12', '12/12', '6/12']}>
             <Stack space={2}>
               <Link
-                href="https://www.skatturinn.is/um-skatturinn/almennar-upplysingar/"
+                href="https://www.skatturinn.is/um-rsk/embaettid/"
                 underline="normal"
               >
                 <Text variant="h5" color="purple600">
-                  Um Skatturinn
+                  Um Skattinn
                 </Text>
               </Link>
               <Link
