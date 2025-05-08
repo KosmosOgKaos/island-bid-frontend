@@ -18,6 +18,7 @@ import {
 } from '@island.is/island-ui/core'
 import { useLoginMutation } from '@/lib/graphql'
 import { useSsn } from '../context/SsnContext'
+import { useName } from '../context/NameContext'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -25,6 +26,7 @@ export default function LoginPage() {
   const [loginError, setLoginError] = useState(false)
   const [loginMutation, { loading }] = useLoginMutation()
   const { setSsn } = useSsn()
+  const { setName } = useName()
 
   const handleLogin = async () => {
     try {
@@ -36,6 +38,7 @@ export default function LoginPage() {
       })
       if (result.data?.login.success) {
         setSsn(result.data.login.ssn || '')
+        setName(result.data.login.name || '')
         router.push('/application')
       } else {
         setLoginError(true)
