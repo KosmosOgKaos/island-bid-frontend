@@ -21,6 +21,7 @@ export const DataCollection = ({ form }: { form: FormProps }) => {
   // Update form data with fetch error if tax data fetching fails
   React.useEffect(() => {
     if (fetchError) {
+      console.log("fetchErrorTrigger")
       onChange({
         target: {
           name: 'fetchError',
